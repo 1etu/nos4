@@ -1,6 +1,8 @@
 const DevelopmentOrigin = 'http://127.0.0.1:5175'
+const ProductionOrigin = 'https://api.nos4.fun'
+const DefaultOrigin = import.meta.env.DEV ? DevelopmentOrigin : ProductionOrigin
 
-export const GKServiceOrigin = import.meta.env.VITE_GAMECENTER_ORIGIN ?? DevelopmentOrigin
+export const GKServiceOrigin = import.meta.env.VITE_GAMECENTER_ORIGIN ?? DefaultOrigin
 
 export const GKMetrics = {
   requestTimeoutMilliseconds: 8000,

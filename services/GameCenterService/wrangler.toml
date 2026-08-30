@@ -3,7 +3,7 @@ main = "src/worker.ts"
 compatibility_date = "2026-08-30"
 
 [vars]
-NOS4_GAME_CENTER_ORIGINS = "http://localhost:5173"
+NOS4_GAME_CENTER_ORIGINS = "https://nos4.fun,https://www.nos4.fun"
 
 [placement]
 mode = "smart"
