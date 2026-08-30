@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Doom</title>
+  <style>
+    *{box-sizing:border-box}
+    html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#000;touch-action:none;user-select:none}
+    body{position:relative;font-family:monospace}
+    #canvas{display:none;width:100%;height:100%;background:#000;outline:0;cursor:crosshair;image-rendering:pixelated}
+    #status{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#b54226;background:radial-gradient(circle,#260800 0,#000 72%);font-size:20px;font-weight:700;letter-spacing:2px;text-shadow:2px 2px #310000}
+    #controls{position:absolute;inset:0;display:none;pointer-events:none}
+    button{position:absolute;display:block;margin:0;padding:0;border:0;background:transparent;pointer-events:auto;touch-action:none;filter:drop-shadow(2px 3px 2px rgba(0,0,0,.82));opacity:.76}
+    button img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;image-rendering:pixelated}
+    button.active{transform:translateY(2px) scale(.96);filter:brightness(1.3) drop-shadow(1px 1px 1px rgba(0,0,0,.9));opacity:1}
+    .action{height:48px}
+    #fire{right:12px;bottom:12px;width:136px}
+    #use{right:154px;bottom:14px;width:108px;height:40px}
+    #run{right:120px;bottom:60px;width:90px;height:32px}
+    .utility{top:8px;width:86px;height:30px}
+    #menu{right:8px}
+    #enter{right:98px}
+    #map{right:188px}
+  </style>
+</head>
+<body>
+  <canvas id="canvas" tabindex="0"></canvas>
+  <div id="status">LOADING DOOM</div>
+  <div id="controls">
+    <button id="fire" class="action" type="button" data-code="ControlLeft" aria-label="Fire"><img src="controls/fire.png" alt=""></button>
+    <button id="use" class="action" type="button" data-code="Space" aria-label="Use"><img src="controls/use.png" alt=""></button>
+    <button id="run" type="button" data-code="ShiftLeft" aria-label="Run"><img src="controls/run.png" alt=""></button>
+    <button id="map" class="utility" type="button" data-code="Tab" aria-label="Map"><img src="controls/map.png" alt=""></button>
+    <button id="enter" class="utility" type="button" data-code="Enter" aria-label="OK"><img src="controls/ok.png" alt=""></button>
+    <button id="menu" class="utility" type="button" data-code="Escape" aria-label="Menu"><img src="controls/menu.png" alt=""></button>
+  </div>
+  <script>
+    const canvas = document.getElementById('canvas')
+    const controls = document.getElementById('controls')
+    const status = document.getElementById('status')
+    const heldKeys = new Set()
+    let directKeyEvent = false
+    let menuRequested = false
+    const wadSize = 4196020
+    const wadHash = '1d7d43be501e67d927e415e0b8f3e29c3bf33075e859721816f652a526cac771'
+    const episodeMaps = ['E1M1','E1M2','E1M3','E1M4','E1M5','E1M6','E1M7','E1M8','E1M9']
+
+    const fail = () => {
+      canvas.style.display = 'none'
+      controls.style.display = 'none'
+      status.style.display = 'flex'
+      status.textContent = 'DOOM DATA ERROR'
+    }
+
+    const hex = bytes => {
+      let value = ''
+      for (const byte of bytes) value += byte.toString(16).padStart(2,'0')
+      return value
+    }
+
+    const readName = (bytes,offset) => {
+      let value = ''
+      for (let index = 0; index < 8 && bytes[offset + index] !== 0; index += 1) {
+        value += String.fromCharCode(bytes[offset + index])
+      }
+      return value
+    }
+
+    const verifyEpisode = buffer => {
+      const view = new DataView(buffer)
+      const bytes = new Uint8Array(buffer)
+      const count = view.getInt32(4,true)
+      const directory = view.getInt32(8,true)
+      const names = new Set()
+      if (directory < 12 || directory + count * 16 > buffer.byteLength) throw new Error()
+      for (let index = 0; index < count; index += 1) names.add(readName(bytes,directory + index * 16 + 8))
+      for (const map of episodeMaps) if (!names.has(map)) throw new Error()
+    }
+
+    const loadWad = async () => {
+      const response = await fetch('doom1.wad')
+      if (!response.ok) throw new Error()
+      const buffer = await response.arrayBuffer()
+      if (buffer.byteLength !== wadSize) throw new Error()
+      const digest = await crypto.subtle.digest('SHA-256',buffer)
+      if (hex(new Uint8Array(digest)) !== wadHash) throw new Error()
+      verifyEpisode(buffer)
+      return new Uint8Array(buffer)
+    }
+
+    const wad = loadWad()
+
+    const emitKey = (code,pressed) => {
+      directKeyEvent = true
+      window.dispatchEvent(new KeyboardEvent(pressed ? 'keydown' : 'keyup',{code}))
+      directKeyEvent = false
+    }
+
+    const remapSpace = event => {
+      if (directKeyEvent || event.code !== 'Space') return
+      event.preventDefault()
+      event.stopImmediatePropagation()
+      emitKey('ControlLeft',event.type === 'keydown')
+    }
+
+    const releaseKeys = () => {
+      for (const code of heldKeys) emitKey(code,false)
+      heldKeys.clear()
+      for (const button of document.querySelectorAll('button')) button.classList.remove('active')
+    }
+
+    const resumeAudio = () => {
+      const context = Module.SDL2 && Module.SDL2.audioContext
+      if (context && context.state === 'suspended') context.resume()
+    }
+
+    const press = (button,event) => {
+      const code = button.dataset.code
+      if (!code || heldKeys.has(code)) return
+      event.preventDefault()
+      button.setPointerCapture(event.pointerId)
+      button.classList.add('active')
+      heldKeys.add(code)
+      resumeAudio()
+      emitKey(code,true)
+    }
+
+    const release = button => {
+      const code = button.dataset.code
+      if (!code || !heldKeys.has(code)) return
+      heldKeys.delete(code)
+      button.classList.remove('active')
+      emitKey(code,false)
+    }
+
+    for (const button of document.querySelectorAll('button')) {
+      button.addEventListener('pointerdown',event => press(button,event))
+      button.addEventListener('pointerup',() => release(button))
+      button.addEventListener('pointercancel',() => release(button))
+    }
+
+    window.addEventListener('blur',releaseKeys)
+    window.addEventListener('keydown',remapSpace,true)
+    window.addEventListener('keyup',remapSpace,true)
+
+    canvas.addEventListener('pointerup',() => {
+      canvas.focus()
+      if (!document.pointerLockElement) canvas.requestPointerLock()
+    })
+
+    const openMenu = () => {
+      if (menuRequested) return
+      menuRequested = true
+      let frames = 0
+      const waitForGame = () => {
+        frames += 1
+        if (frames < 30) {
+          requestAnimationFrame(waitForGame)
+          return
+        }
+        emitKey('Escape',true)
+        requestAnimationFrame(() => emitKey('Escape',false))
+      }
+      requestAnimationFrame(waitForGame)
+    }
+
+    const ready = () => {
+      status.style.display = 'none'
+      canvas.style.display = 'block'
+      controls.style.display = 'block'
+      canvas.focus()
+      openMenu()
+    }
+
+    var Module = {
+      arguments: ['-iwad','doom1.wad','-width','640','-height','400'],
+      canvas,
+      print: () => {},
+      printErr: () => {},
+      setStatus: () => {},
+      hideConsole: ready,
+      showConsole: () => {},
+      captureMouse: () => {},
+      winResized: () => {},
+      onAbort: fail,
+      preRun: [() => {
+        const dependency = 'doom1.wad'
+        Module.addRunDependency(dependency)
+        wad.then(bytes => {
+          Module.FS_createDataFile('/','doom1.wad',bytes,true,false,true)
+          Module.removeRunDependency(dependency)
+        }).catch(() => {
+          fail()
+          Module.removeRunDependency(dependency)
+        })
+      }],
+      postRun: [() => {
+        ready()
+      }]
+    }
+  </script>
+  <script src="index.js"></script>
+</body>
+</html>

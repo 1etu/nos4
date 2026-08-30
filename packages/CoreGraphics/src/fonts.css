@@ -1,0 +1,51 @@
+@font-face {
+  font-family: 'Helvetica Neue Local';
+  src:
+    local('Helvetica Neue'),
+    local('HelveticaNeue'),
+    url('/fonts/HelveticaNeue-Regular.ttf') format('truetype');
+  font-weight: 100 500;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Helvetica Neue Local';
+  src:
+    local('Helvetica Neue Bold'),
+    local('HelveticaNeue-Bold'),
+    local('Arial Bold'),
+    local('Arial-BoldMT'),
+    url('/fonts/HelveticaNeue-Regular.ttf') format('truetype');
+  font-weight: 600 900;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'PhoneKeyCaps';
+  src: url('/fonts/PhoneKeyCaps.ttf') format('truetype');
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'PhonepadTwo';
+  src: url('/fonts/PhonepadTwo.ttf') format('truetype');
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Hackensack';
+  src: url('/fonts/Hackensack.ttf') format('truetype');
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Superclarendon Bold';
+  src: url('/fonts/Superclarendon Bold.ttf') format('truetype');
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Phosphate Inline';
+  src: url('/fonts/Phosphate-Inline.ttf') format('truetype');
+  font-display: block;
+}

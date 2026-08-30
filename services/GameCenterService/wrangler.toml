@@ -1,0 +1,15 @@
+name = "nos4-game-center"
+main = "src/worker.ts"
+compatibility_date = "2026-08-30"
+
+[vars]
+NOS4_GAME_CENTER_ORIGINS = "http://localhost:5173"
+
+[placement]
+mode = "smart"
+
+[limits]
+cpu_ms = 100
+
+[triggers]
+crons = ["17 4 * * *"]

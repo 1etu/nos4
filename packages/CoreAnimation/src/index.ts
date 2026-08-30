@@ -1,0 +1,7 @@
+export { CAMediaTimingFunction } from './Timing/CAMediaTimingFunction'
+export type { CATimingFunction } from './Timing/CAMediaTimingFunction'
+export { CATransitionDuration } from './Timing/CATransitionDuration'
+export { caAfter } from './Animation/CATransaction'
+export type { CATransaction } from './Animation/CATransaction'
+export { caAnimation, caTransition } from './Animation/CAAnimation'
+export type { CAAnimation } from './Animation/CAAnimation'

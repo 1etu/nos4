@@ -1,0 +1,222 @@
+export const MobileiPodMetrics = {
+  statusBarHeight: 24,
+  titleBarHeight: 60,
+  tabBarHeight: 57,
+  tabRowHeight: 55,
+  tabSelectionHeight: 51,
+  tabSelectionRadius: 3,
+  tabSelectionInset: 5,
+  tabLabelFontSize: 11,
+  tabIconHeight: 30,
+  tabIconHeightSelected: 30.5,
+  tabIconWidthNarrow: 20,
+  tabIconWidthNarrowSelected: 20.5,
+  tabIconWidthWide: 37.5,
+  tabIconWidth: 30,
+  tabIconWidthSelected: 30.5,
+
+  titleFontSize: 22,
+  titleMaxWidth: 180,
+  nowPlayingButtonWidth: 67,
+  nowPlayingButtonHeight: 40,
+  nowPlayingButtonTrailing: 5.5,
+  nowPlayingLabelFontSize: 11,
+  nowPlayingLabelOffsetX: -3,
+  backButtonWidth: 84 * (33 / 34.33783783783784),
+  backButtonHeight: 33,
+  backButtonLeading: 5.5,
+  backButtonFontSize: 13,
+  backButtonLabelMaxWidth: 75,
+
+  rowHeight: 44,
+  hairline: 0.95,
+  rowFontSize: 18,
+  rowSubtitleFontSize: 14,
+  rowLeading: 11,
+  rowTrailing: 40,
+  rowPadTop: 4.5,
+  rowPadBottom: 9.5,
+  chevronTrailing: 12,
+  artworkRowHeight: 60,
+  artworkSize: 60 - 0.95,
+  artworkTitleLeading: 6,
+  moreIconSlot: 25,
+  moreRowLeading: 15,
+  footerCountFontSize: 20,
+
+  searchRowHeight: 44,
+  searchFieldLeading: 5.5,
+  searchFieldTrailing: 5.5,
+  searchFieldTrailingWide: 35,
+  searchIconSize: 15,
+  searchFontSize: 17,
+  searchIconLeading: 5,
+  searchContentSpacing: 10,
+  searchPaddingY: 5,
+  searchLeadInset: 10,
+  searchTrailInset: 8,
+  searchTopBorder: 0.75,
+  cancelWidth: 59,
+  cancelHeight: 32,
+  cancelRadius: 5.5,
+  cancelFontSize: 13.25,
+  cancelTrailing: 5,
+
+  headerHeight: 22,
+  headerFontSize: 18,
+  headerLeading: 12,
+  headerTopBorderOuter: 2.4,
+  headerTopBorderInner: 1.2,
+
+  indexWidth: 14,
+  indexEntryHeight: 16.5,
+  indexSpacing: 2,
+  indexFontSize: 13.25,
+  indexTrailing: 12,
+  indexTrackWidth: 24,
+  indexTrackTrailing: 7,
+  indexTrackRadius: 12,
+
+  playlistButtonRadius: 8,
+  playlistButtonFontSize: 18,
+  playlistButtonInset: 8,
+  playlistButtonSpacing: 8,
+
+  albumHeaderHeight: 120,
+  albumArtworkSize: 100,
+  albumArtworkLeading: 6,
+  albumArtistFontSize: 16,
+  albumTitleFontSize: 20,
+  albumDetailFontSize: 10,
+  albumRowHeight: 44,
+  albumRule: 2,
+  albumNumberColumn: 40,
+  albumRuleInset: 45,
+  albumTrackFontSize: 16,
+  albumDurationFontSize: 15,
+  albumTrackTitleLeading: 14,
+
+  nowPlayingTitleBarHeight: 60,
+  nowPlayingBackWidth: 102 / (69 / 34.33783783783784),
+  nowPlayingBackHeight: 34.33783783783784,
+  nowPlayingBackArrowWidth: 23,
+  nowPlayingBackArrowHeight: 19,
+  nowPlayingBackInset: 8,
+  nowPlayingMetaFontSize: 13,
+  nowPlayingFlipperSize: 34.33783783783784,
+  nowPlayingFlipperBackgroundSize: 37.5,
+
+  timingControlsHeight: 90,
+  timingFontSize: 14,
+  timingInsetX: 15,
+  timingSliderHeight: 20,
+  sliderTrackHeight: 8,
+  sliderTrackRadius: 4.25,
+  sliderTrackInset: 4,
+  timingButtonInset: 20,
+
+  tracksHeaderHeight: 44,
+  trackRowHeight: 44,
+  trackRule: 2,
+  trackNumberColumn: 60,
+  trackRuleInset: 65,
+  trackFontSize: 14,
+  trackTitleLeading: 14,
+  trackPlayIconLeading: 40,
+  trackPlayIconHeight: 10,
+  starSlot: 40,
+  starFilledWidth: 20,
+  starFilledHeight: 40,
+  starEmptySize: 6,
+
+  footerHeight: 110,
+  transportRowHeight: 55,
+  transportGap: 5,
+  volumeRowHeight: 50,
+  volumeInsetX: 30,
+  volumeTrackHeight: 8.5,
+  volumeSliderHeight: 25,
+  prevNextWidth: 31,
+  prevNextHeight: 23,
+  playPauseWidth: 30,
+  playPauseHeight: 26,
+
+  videosIconInsetX: 70,
+  videosGapLarge: 35,
+  videosGapSmall: 20,
+  videosStackSpacing: 8,
+  videosTitleFontSize: 20,
+  videosBodyFontSize: 14,
+  videosArrowCircle: 14,
+  videosArrowSize: 7.5,
+
+  navDuration: 0.28,
+  flipDuration: 0.4,
+  flipHandoff: 0.39,
+  flipSettle: 0.8,
+  flipBackgroundDelay: 0.48,
+  selectionDelay: 0.25,
+  contentOffsetY: -1.2
+} as const
+
+const rgb = (r: number, g: number, b: number): string => `rgb(${r},${g},${b})`
+
+export const MobileiPodPalette = {
+  titleBar:
+    'linear-gradient(to bottom, rgb(180,191,205) 0%, rgb(136,155,179) 49%, rgb(128,149,175) 49%, rgb(110,133,162) 100%)',
+  barEdge: rgb(45, 48, 51),
+  chrome:
+    'linear-gradient(to bottom, rgb(0,0,0) 0%, rgb(84,84,84) 2%, rgb(59,59,59) 4%, rgb(29,29,29) 50%, rgb(8,8,8) 51%, rgb(8,8,8) 100%)',
+  listBackground:
+    'linear-gradient(to bottom, rgb(227,231,236) 0%, rgb(227,231,236) 50%, rgb(255,255,255) 50%, rgb(255,255,255) 100%)',
+  separator: rgb(224, 224, 224),
+  subtitle: rgb(142, 142, 147),
+  tabLabelIdle: rgb(168, 168, 168),
+  tabIconIdle: 'linear-gradient(to bottom, rgb(157,157,157), rgb(89,89,89))',
+  tabIconActive:
+    'linear-gradient(to bottom, rgb(197,210,229) 0%, rgb(99,162,216) 47%, rgb(0,145,230) 49%, rgb(21,197,252) 100%)',
+  tabIconActiveFlat: 'linear-gradient(to bottom, rgb(0,145,230), rgb(21,197,252))',
+  tabIconRim: 'linear-gradient(to bottom, rgb(205,233,249), rgb(75,220,251))',
+
+  searchBar:
+    'linear-gradient(to bottom, rgb(252,250,250) 0%, rgb(224,228,231) 4%, rgb(180,190,198) 100%)',
+  searchBarEdge: rgb(163, 173, 182),
+  searchFieldStroke: rgb(166, 166, 166),
+
+  listHeader:
+    'linear-gradient(to bottom, rgb(148,162,173) 0%, rgb(177,186,195) 52%, rgb(183,192,199) 93%, rgb(148,158,166) 97%, rgb(152,163,170) 100%)',
+  listHeaderRimOuter:
+    'linear-gradient(to bottom, rgb(176,186,194) 0%, rgb(176,186,194) 45%, rgb(165,177,186) 50%, rgb(165,177,186) 100%)',
+  listHeaderRimInner:
+    'linear-gradient(to bottom, rgb(122,134,142) 0%, rgb(122,134,143) 45%, rgb(140,152,160) 50%, rgb(140,152,160) 100%)',
+  indexTint: rgb(106, 115, 125),
+
+  playlistButton: 'linear-gradient(to bottom, rgb(229,230,231), rgb(210,210,213))',
+  playlistButtonStroke: rgb(154, 154, 154),
+  playlistButtonLabel: rgb(51, 51, 51),
+
+  albumHeader: 'linear-gradient(to bottom, rgb(248,248,248), rgb(236,236,236))',
+  albumDetail: rgb(128, 128, 128),
+  albumRule: rgb(228, 228, 228),
+  albumRowAlternate: rgb(243, 243, 243),
+
+  trackRule: rgb(65, 64, 65),
+  trackPlayIcon: rgb(54, 98, 214),
+  tracksHeader:
+    'linear-gradient(to bottom, rgb(0,0,0) 0%, rgb(0,0,0) 35%, rgb(26,26,26) 100%)',
+
+  nowPlayingMeta: rgb(159, 159, 159),
+  footerTop:
+    'linear-gradient(to bottom, rgba(71,70,70,0.825), rgba(16,15,15,0.875))',
+  footerBottom: 'rgba(8,8,8,0.97)',
+
+  sliderFill:
+    'linear-gradient(to bottom, rgb(205,220,241) 0%, rgb(125,174,245) 50%, rgb(45,111,198) 50%, rgb(50,151,236) 100%)',
+  sliderTrack:
+    'linear-gradient(to bottom, rgb(218,218,218) 0%, rgb(166,166,166) 19%, rgb(204,204,204) 50%, rgb(255,255,255) 50%, rgb(255,255,255) 100%)',
+
+  videosText: rgb(98, 106, 121),
+  videosArrow: rgb(125, 127, 133),
+  cancelButton:
+    'linear-gradient(to bottom, rgb(164,175,191) 0%, rgb(124,141,164) 51%, rgb(113,131,156) 51%, rgb(112,130,155) 100%)'
+} as const

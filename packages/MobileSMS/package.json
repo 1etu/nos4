@@ -1,0 +1,16 @@
+{
+  "name": "@nos4/mobilesms",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@nos4/coreanimation": "workspace:*",
+    "@nos4/coregraphics": "workspace:*",
+    "@nos4/nsuserdefaults": "workspace:*",
+    "@nos4/textinput": "workspace:*",
+    "@nos4/uikit": "workspace:*",
+    "solid-js": "^1.9.0"
+  }
+}

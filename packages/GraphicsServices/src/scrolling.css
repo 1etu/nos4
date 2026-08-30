@@ -1,0 +1,28 @@
+.gs-scroll-view {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.gs-scroll-view img,
+.gs-scroll-view a {
+  -webkit-user-drag: none;
+}
+
+.gs-scroll-view input,
+.gs-scroll-view textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+* {
+  scrollbar-width: none;
+}

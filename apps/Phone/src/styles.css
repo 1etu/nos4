@@ -1,0 +1,26 @@
+@import 'tailwindcss';
+@import '@nos4/coregraphics/fonts.css';
+@import '@nos4/graphicsservices/scrolling.css';
+
+@source '../../../packages';
+
+@keyframes sbShimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
+}
+
+@keyframes sbJiggle {
+  0% {
+    transform: rotate(calc(var(--jiggle-rotation) * -1)) translateX(var(--jiggle-shift));
+  }
+  50% {
+    transform: rotate(var(--jiggle-rotation)) translateX(calc(var(--jiggle-shift) * -1));
+  }
+  100% {
+    transform: rotate(calc(var(--jiggle-rotation) * -1)) translateX(var(--jiggle-shift));
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "nos4",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --filter @nos4/debug dev",
+    "build": "pnpm --filter @nos4/phone build",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "proxy": "node --experimental-strip-types tools/WebProxy/src/main.ts",
+    "service": "node --env-file-if-exists=.env --experimental-strip-types services/GameCenterService/src/main.ts"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.0",
+    "@types/node": "^26.4.0",
+    "@types/three": "^0.185.4",
+    "solid-js": "^1.9.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0",
+    "vite-plugin-solid": "^2.11.0"
+  }
+}

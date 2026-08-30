@@ -1,0 +1,6 @@
+{
+  "name": "@nos4/webproxy",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module"
+}

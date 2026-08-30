@@ -1,0 +1,43 @@
+export const CameraMetrics = {
+  headerPaddingTop: 10,
+  headerInset: 8,
+  capsuleWidth: 80,
+  capsuleHeight: 33.07,
+  hdrCapsuleWidth: 95,
+  capsuleStroke: 0.95,
+  toggleWidth: 65,
+  toggleHeight: 33.58,
+  timerWidth: 95,
+  timerHeight: 29.33,
+  timerRadius: 6,
+  timerFontSize: 19,
+  capsuleFontSize: 14,
+  toolBarHeight: 60,
+  toolBarInset: 8,
+  thumbnailSize: 41,
+  thumbnailRadius: 3,
+  thumbnailGroupDivisor: 4.5,
+  shutterDivisor: 3.25,
+  flipperDivisor: 4.75,
+  flipperTrackHeight: 15,
+  flipperKnobHeight: 14,
+  flipperStackSpacing: 1,
+  flipperSnapDuration: 0.1,
+  recordBlinkInterval: 1000,
+  captureSettleDelay: 0.65,
+  placeholderScene: 'media/photo-1.jpg'
+} as const
+
+export const CameraPalette = {
+  capsuleFill: 'rgba(255,255,255,0.2)',
+  capsuleStroke: 'rgba(21,21,21,0.85)',
+  capsuleText: 'rgba(21,21,21,0.85)',
+  timerFill: 'rgba(0,0,0,0.35)',
+  timerStroke: 'rgba(255,255,255,0.25)',
+  toolBar: 'linear-gradient(to bottom, rgb(255,255,255) 0%, rgb(123,125,131) 100%)',
+  flipperTrack: 'linear-gradient(to bottom, rgb(103,104,107) 0%, rgb(141,143,148) 65%)',
+  flipperTrackStroke: 'rgb(73,74,76)',
+  flipperKnob: 'linear-gradient(to bottom, rgb(227,229,232), rgb(119,121,126))',
+  flipperKnobStroke: 'rgb(114,113,113)',
+  thumbnailStroke: 'rgb(73,74,76)'
+} as const

@@ -1,0 +1,72 @@
+export const UIStatusBarMetrics = {
+  height: 24,
+  edgeInset: 4,
+  stackSpacing: 8,
+  fontSize: 15,
+  airplaneWidth: 15,
+  airplaneHeight: 15,
+  wifiWidth: 22,
+  wifiHeight: 15.5,
+  batteryBodyWidth: 23,
+  batteryBodyHeight: 12.25,
+  batteryStroke: 1.25,
+  batteryNubStroke: 1,
+  batteryCornerRadius: 0.25,
+  batteryFillWidth: 21.5,
+  batteryFillHeight: 10.75,
+  batteryFillInset: 0.75,
+  batteryShellVignette: 1.8375,
+  batteryFillVignetteFactor: 0.15,
+  batteryChargeWidth: 18.5,
+  batteryChargeHeight: 8,
+  batteryChargeInsetX: 2.25,
+  batteryChargeInsetY: 2.125,
+  batteryLowLevel: 0.2,
+  boltWidth: 8,
+  boltHeight: 7,
+  boltInAppHeight: 9.75,
+  batteryNubWidth: 3,
+  batteryNubHeight: 5,
+  batteryNubGap: 0.05,
+  batteryTrailingSpacing: 3,
+  batteryEndInset: 2.95,
+  lockWidth: 10,
+  lockHeight: 14,
+  inAppTopRadius: 1.75,
+  inAppEdgeWidth: 0.45,
+  inAppInnerShadowHeight: 1.8
+} as const
+
+const rgb = (r: number, g: number, b: number): string => `rgb(${r},${g},${b})`
+
+export const UIStatusBarPalette = {
+  overlay: {
+    background: 'rgba(0,0,0,0.65)',
+    weight: '500',
+    carrier: rgb(200, 200, 200),
+    carrierNoSim: rgb(200, 200, 200),
+    glyph: rgb(190, 190, 190),
+    time: rgb(190, 190, 190),
+    textShadow: 'none'
+  },
+  inApp: {
+    background: `linear-gradient(to bottom, ${rgb(237, 244, 247)} 7%, ${rgb(191, 199, 203)} 100%)`,
+    weight: '700',
+    carrier: rgb(66, 66, 66),
+    carrierNoSim: 'rgb(0,0,0)',
+    glyph: rgb(74, 74, 74),
+    time: 'rgb(0,0,0)',
+    textShadow: '0 1px 0 rgba(255,255,255,0.5)'
+  },
+  inAppEdge: rgb(93, 100, 105),
+  inAppInnerShadow: 'rgba(142,149,154,0.75)',
+  wifiTop: rgb(32, 157, 237),
+  wifiBottom: rgb(72, 118, 196),
+  batteryShell: `linear-gradient(to bottom, ${rgb(77, 77, 79)} 0%, ${rgb(77, 77, 79)} 50%, ${rgb(198, 198, 198)} 100%)`,
+  batteryShellStroke: `linear-gradient(to bottom, ${rgb(39, 41, 47)}, ${rgb(95, 101, 116)})`,
+  batteryShellVignetteColor: 'rgba(51,53,58,0.75)',
+  batteryFill: `linear-gradient(to bottom, ${rgb(107, 208, 55)} 0%, ${rgb(215, 252, 180)} 24.333%, ${rgb(134, 226, 73)} 48.667%, ${rgb(68, 163, 29)} 73%)`,
+  batteryFillVignetteColor: 'rgba(220,255,177,0.75)',
+  batteryNub: `linear-gradient(to bottom, ${rgb(250, 250, 250)}, ${rgb(149, 149, 149)})`,
+  batteryLow: rgb(255, 59, 48)
+} as const

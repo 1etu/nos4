@@ -1,0 +1,32 @@
+{
+  "name": "@nos4/debug",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@nos4/coreanimation": "workspace:*",
+    "@nos4/coregraphics": "workspace:*",
+    "@nos4/corelocation": "workspace:*",
+    "@nos4/coretelephony": "workspace:*",
+    "@nos4/device": "workspace:*",
+    "@nos4/foundation": "workspace:*",
+    "@nos4/graphicsservices": "workspace:*",
+    "@nos4/mobileaddressbook": "workspace:*",
+    "@nos4/mobilecamera": "workspace:*",
+    "@nos4/mobilemail": "workspace:*",
+    "@nos4/mobilemaps": "workspace:*",
+    "@nos4/mobilesafari": "workspace:*",
+    "@nos4/mobileslideshow": "workspace:*",
+    "@nos4/mobileweather": "workspace:*",
+    "@nos4/preferences": "workspace:*",
+    "@nos4/scenekit": "workspace:*",
+    "@nos4/springboard": "workspace:*",
+    "@nos4/textinput": "workspace:*",
+    "@nos4/uikit": "workspace:*",
+    "solid-js": "^1.9.0"
+  }
+}

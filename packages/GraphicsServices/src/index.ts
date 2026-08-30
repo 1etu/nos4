@@ -1,0 +1,7 @@
+export { GSHandPhase, GSScrollPhase } from './Support/GraphicsServicesTypes'
+export type { GSHandPhaseValue, GSScrollPhaseValue } from './Support/GraphicsServicesTypes'
+export { gsAttachEventTap } from './Events/GSEventTap'
+export type { GSEventRecord, GSEventTapHandlers } from './Events/GSEventTap'
+export { gsAttachScroller } from './Scrolling/GSScroller'
+export type { GSScroller } from './Scrolling/GSScroller'
+export { GSScrollMetrics } from './Scrolling/GSScrollMetrics'

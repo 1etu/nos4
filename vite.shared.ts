@@ -1,0 +1,45 @@
+import { fileURLToPath } from 'node:url'
+
+const framework = (name: string): string =>
+  fileURLToPath(new URL(`./packages/${name}/src/index.ts`, import.meta.url))
+
+export const frameworkAliases: Record<string, string> = {
+  Foundation: framework('Foundation'),
+  Device: framework('Device'),
+  SpringBoard: framework('SpringBoard'),
+  CoreGraphics: framework('CoreGraphics'),
+  CoreAnimation: framework('CoreAnimation'),
+  GraphicsServices: framework('GraphicsServices'),
+  SceneKit: framework('SceneKit'),
+  AVFoundation: framework('AVFoundation'),
+  Celestial: framework('Celestial'),
+  CoreLocation: framework('CoreLocation'),
+  CoreTelephony: framework('CoreTelephony'),
+  Preferences: framework('Preferences'),
+  MobileMail: framework('MobileMail'),
+  MobileAddressBook: framework('MobileAddressBook'),
+  MobileMaps: framework('MobileMaps'),
+  UIKit: framework('UIKit'),
+  SpriteKit: framework('SpriteKit'),
+  GameKit: framework('GameKit'),
+  GameFlattyBird: framework('GameFlattyBird'),
+  GameDoom: framework('GameDoom'),
+  MobileSlideShow: framework('MobileSlideShow'),
+  TextInput: framework('TextInput'),
+  MobileCamera: framework('MobileCamera'),
+  MobileWeather: framework('MobileWeather'),
+  MobileSafari: framework('MobileSafari'),
+  MobileiPod: framework('MobileiPod'),
+  MobileStocks: framework('MobileStocks'),
+  MobileNotes: framework('MobileNotes'),
+  MobileCal: framework('MobileCal'),
+  MobileCalculator: framework('MobileCalculator'),
+  MobileTimer: framework('MobileTimer'),
+  MobileCompass: framework('MobileCompass'),
+  MobileGameCenter: framework('MobileGameCenter'),
+  MobileSMS: framework('MobileSMS'),
+  MobilePhone: framework('MobilePhone'),
+  MobileStore: framework('MobileStore'),
+  MobileVoiceMemos: framework('MobileVoiceMemos'),
+  NSUserDefaults: framework('NSUserDefaults')
+}
