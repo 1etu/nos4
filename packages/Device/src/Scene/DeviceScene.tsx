@@ -38,6 +38,15 @@ const DeviceTop = GripCentreY - (BodyHeight / 2 + BodyTop) * DeviceScale
 const PhoneHeight = BodyHeight * DeviceScale
 const PhoneBodyWidth = BodyWidth * DeviceScale
 const PhoneWidthMillimetres = 58.6
+const PhoneCornerRadiusMillimetres = 3.8
+
+const PortCentreX =
+  DeviceLeft + (DeviceShell.portLeft + DeviceShell.portWidth / 2) * DeviceScale
+const PortCentreY = DeviceTop + DeviceShell.portTop * DeviceScale
+const PhoneBodyLeft = DeviceLeft + BodyLeft * DeviceScale
+const PhoneBodyTop = DeviceTop + BodyTop * DeviceScale
+const PhoneBodyRight = PhoneBodyLeft + BodyWidth * DeviceScale
+const PhoneBodyBottom = PhoneBodyTop + BodyHeight * DeviceScale
 
 const fade = caAnimation(DeviceSceneMetrics.sceneFadeDuration, CAMediaTimingFunction.easeInOut)
 const orientationAnimation = caAnimation(
@@ -59,6 +68,12 @@ export const DeviceScene = (props: { children: JSX.Element }) => {
   let settle: CATransaction | undefined
 
   const landscape = () => orientation() === DeviceOrientation.landscape
+
+  const sceneX = (value: number) =>
+    left() + GripCentreX + (value - GripCentreX) * scale()
+
+  const sceneY = (value: number) =>
+    top() + GripCentreY + (value - GripCentreY) * scale()
 
   const fit = () => {
     const next = landscape()
@@ -117,7 +132,9 @@ export const DeviceScene = (props: { children: JSX.Element }) => {
   )
 
   return (
-    <div style={{ position: 'fixed', inset: '0', overflow: 'hidden' }}>
+    <div
+      style={{ position: 'fixed', inset: '0', overflow: 'hidden', isolation: 'isolate' }}
+    >
       <Show when={!uiScreenIsCompact()}>
         <DeviceSceneToggle
           enabled={!uiScreenSceneHidden()}
@@ -126,41 +143,36 @@ export const DeviceScene = (props: { children: JSX.Element }) => {
       </Show>
 
       <Show when={mounted() && !landscape()}>
-        <div
-          style={{
-            position: 'fixed',
-            inset: '0',
-            opacity: `${opaque() ? 1 : 0}`,
-            transition: caTransition(['opacity'], fade),
-            'pointer-events': opaque() ? 'auto' : 'none'
+        <SCNView
+          port={{
+            x: sceneX(PortCentreX),
+            y: sceneY(PortCentreY),
+            outwardX: 0,
+            outwardY: 1,
+            body: {
+              left: sceneX(PhoneBodyLeft),
+              top: sceneY(PhoneBodyTop),
+              right: sceneX(PhoneBodyRight),
+              bottom: sceneY(PhoneBodyBottom),
+              cornerRadius:
+                PhoneCornerRadiusMillimetres *
+                ((PhoneBodyWidth * scale()) / PhoneWidthMillimetres),
+              portWidth: DeviceShell.portWidth * DeviceScale * scale()
+            }
           }}
-        >
-          <SCNView
-            port={{
-              x:
-                left() +
-                GripCentreX +
-                (DeviceLeft +
-                  (DeviceShell.portLeft + DeviceShell.portWidth / 2) * DeviceScale -
-                  GripCentreX) *
-                  scale(),
-              y:
-                top() +
-                GripCentreY +
-                (DeviceTop + DeviceShell.portTop * DeviceScale - GripCentreY) * scale()
-            }}
-            pixelsPerMillimetre={(PhoneBodyWidth * scale()) / PhoneWidthMillimetres}
-            plugged={plugged()}
-            onPlug={() => {
-              uiDeviceSetPluggedIn(true)
-              setPlugged(true)
-            }}
-            onUnplug={() => {
-              uiDeviceSetPluggedIn(false)
-              setPlugged(false)
-            }}
-          />
-        </div>
+          pixelsPerMillimetre={(PhoneBodyWidth * scale()) / PhoneWidthMillimetres}
+          opacity={opaque() ? 1 : 0}
+          transition={caTransition(['opacity'], fade)}
+          plugged={plugged()}
+          onPlug={() => {
+            uiDeviceSetPluggedIn(true)
+            setPlugged(true)
+          }}
+          onUnplug={() => {
+            uiDeviceSetPluggedIn(false)
+            setPlugged(false)
+          }}
+        />
       </Show>
 
       <Show when={mounted() && !landscape()}>
@@ -172,6 +184,7 @@ export const DeviceScene = (props: { children: JSX.Element }) => {
             position: 'fixed',
             right: '1.5vw',
             top: '50%',
+            'z-index': '0',
             width: 'min(38vw, 80vh, 780px)',
             height: 'auto',
             transform: 'translateY(-50%) rotate(-1deg)',
@@ -186,6 +199,7 @@ export const DeviceScene = (props: { children: JSX.Element }) => {
       <div
         style={{
           position: 'absolute',
+          'z-index': '2',
           left: `${left()}px`,
           top: `${top()}px`,
           width: `${DeviceSceneMetrics.armWidth}px`,

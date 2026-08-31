@@ -32,19 +32,38 @@ const blade = (materials: SCNMaterials): Group => {
   tab.castShadow = true
   group.add(tab)
 
+  const bedGeometry = new RoundedBoxGeometry(
+    Metrics.contactBedWidth,
+    Metrics.contactBedLength,
+    Metrics.contactBedThickness,
+    2,
+    Metrics.tabCorner * 0.42
+  )
+  for (const side of [-1, 1]) {
+    const bed = new Mesh(bedGeometry, materials.cavity)
+    bed.position.set(
+      0,
+      -Metrics.contactBedInset - Metrics.contactBedLength / 2,
+      side * (Metrics.tabThickness / 2 + Metrics.contactBedThickness / 2)
+    )
+    group.add(bed)
+  }
+
   const geometry = new BoxGeometry(
     Metrics.contactWidth,
     Metrics.contactLength,
-    Metrics.tabThickness + Metrics.contactRelief * 2
+    Metrics.contactRelief
   )
-  for (let index = 0; index < Metrics.contactCount; index += 1) {
-    const contact = new Mesh(geometry, materials.gold)
-    contact.position.set(
-      index * Metrics.contactPitch - ContactSpan / 2,
-      -Metrics.contactInset - Metrics.contactLength / 2,
-      0
-    )
-    group.add(contact)
+  for (const side of [-1, 1]) {
+    for (let index = 0; index < Metrics.contactCount; index += 1) {
+      const contact = new Mesh(geometry, materials.gold)
+      contact.position.set(
+        index * Metrics.contactPitch - ContactSpan / 2,
+        -Metrics.contactInset - Metrics.contactLength / 2,
+        side * (Metrics.tabThickness / 2 + Metrics.contactBedThickness + Metrics.contactRelief / 2)
+      )
+      group.add(contact)
+    }
   }
 
   return group
@@ -83,6 +102,17 @@ export const scnMakeLightningPlug = (materials: SCNMaterials): SCNLightningPlug 
   housing.castShadow = true
   housing.receiveShadow = true
   group.add(housing)
+
+  const seam = new Mesh(
+    new BoxGeometry(
+      Metrics.housingWidth - Metrics.housingCorner,
+      Metrics.housingSeamWidth,
+      Metrics.housingThickness + Metrics.contactRelief
+    ),
+    materials.cavity
+  )
+  seam.position.y = -Metrics.tabLength - Metrics.housingLength + Metrics.reliefRootRadius
+  group.add(seam)
 
   const relief = scnMakeStrainRelief(
     materials.cable,

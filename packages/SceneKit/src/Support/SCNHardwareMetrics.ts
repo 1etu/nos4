@@ -16,6 +16,10 @@ export const SCNLightningMetrics = {
   contactPitch: 0.68,
   contactInset: 1.9,
   contactRelief: 0.015,
+  contactBedWidth: 5.9,
+  contactBedLength: 5.35,
+  contactBedInset: 1.18,
+  contactBedThickness: 0.06,
   housingWidth: 10.9,
   housingThickness: 5.6,
   housingLength: 11.6,
@@ -24,6 +28,7 @@ export const SCNLightningMetrics = {
   shoulderLength: 1.15,
   shoulderInset: 0.5,
   shoulderCorner: 1,
+  housingSeamWidth: 0.16,
   reliefLength: 7.2,
   reliefRootRadius: 2.05,
   reliefSegments: 24
@@ -47,7 +52,19 @@ export const SCNUSBPlugMetrics = {
   reliefSegments: 24,
   markWidth: 7.6,
   markInset: 6.4,
-  markLift: 0.03
+  markLift: 0.03,
+  tongueWidth: 10.4,
+  tongueLength: 7.8,
+  tongueThickness: 1.05,
+  tongueInset: 2.4,
+  contactCount: 4,
+  contactWidth: 1.05,
+  contactLength: 4.8,
+  contactPitch: 2.3,
+  contactLift: 0.04,
+  latchWidth: 2.2,
+  latchLength: 1.45,
+  latchInset: 5.2
 } as const
 
 export const SCNAdapterMetrics = {

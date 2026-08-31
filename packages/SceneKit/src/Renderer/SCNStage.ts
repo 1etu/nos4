@@ -3,10 +3,13 @@ import {
   DirectionalLight,
   Mesh,
   NeutralToneMapping,
+  OrthographicCamera,
   PCFSoftShadowMap,
-  PerspectiveCamera,
   PlaneGeometry,
+  Raycaster,
   Scene,
+  SRGBColorSpace,
+  Vector2,
   Vector3,
   WebGLRenderer,
   type Material
@@ -17,17 +20,21 @@ import { SCNRendererMetrics } from './SCNRendererMetrics'
 export interface SCNStage {
   readonly renderer: WebGLRenderer
   readonly scene: Scene
-  readonly camera: PerspectiveCamera
+  readonly camera: OrthographicCamera
   resize: (width: number, height: number, backPlane: number) => void
+  projectToPlane: (x: number, y: number, z: number, target: Vector3) => Vector3
   render: () => void
   dispose: () => void
 }
 
-const RadiansPerDegree = Math.PI / 180
-
-export const scnMakeStage = (canvas: HTMLCanvasElement, shadow: Material): SCNStage => {
+export const scnMakeStage = (
+  canvas: HTMLCanvasElement,
+  shadow: Material,
+  catchesShadows = true
+): SCNStage => {
   const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true })
   renderer.setClearAlpha(0)
+  renderer.outputColorSpace = SRGBColorSpace
   renderer.toneMapping = NeutralToneMapping
   renderer.toneMappingExposure = SCNRendererMetrics.toneExposure
   renderer.shadowMap.enabled = true
@@ -37,7 +44,7 @@ export const scnMakeStage = (canvas: HTMLCanvasElement, shadow: Material): SCNSt
   scene.environment = scnMakeEnvironment(renderer)
   scene.environmentIntensity = SCNRendererMetrics.environmentIntensity
 
-  const camera = new PerspectiveCamera()
+  const camera = new OrthographicCamera()
   const key = new DirectionalLight(0xffffff, SCNRendererMetrics.keyLight.intensity)
   key.castShadow = true
   key.shadow.mapSize.setScalar(SCNRendererMetrics.shadowMapSize)
@@ -52,14 +59,20 @@ export const scnMakeStage = (canvas: HTMLCanvasElement, shadow: Material): SCNSt
 
   const catcher = new Mesh(new PlaneGeometry(1, 1), shadow)
   catcher.receiveShadow = true
-  scene.add(catcher)
+  if (catchesShadows) scene.add(catcher)
 
   const focus = new Vector3()
+  const pointer = new Vector2()
+  const raycaster = new Raycaster()
+  let viewportWidth = 1
+  let viewportHeight = 1
 
   const frameCamera = (width: number, height: number) => {
     const distance = height * SCNRendererMetrics.cameraReach
-    camera.fov = (2 * Math.atan(height / 2 / distance)) / RadiansPerDegree
-    camera.aspect = width / height
+    camera.left = -width / 2
+    camera.right = width / 2
+    camera.top = height / 2
+    camera.bottom = -height / 2
     camera.near = distance * SCNRendererMetrics.cameraNearFactor
     camera.far = distance * SCNRendererMetrics.cameraFarFactor
     camera.position.set(width / 2, height / 2, distance)
@@ -104,16 +117,26 @@ export const scnMakeStage = (canvas: HTMLCanvasElement, shadow: Material): SCNSt
     camera,
     resize: (width, height, backPlane) => {
       const ratio = Math.min(window.devicePixelRatio, SCNRendererMetrics.maximumPixelRatio)
+      viewportWidth = width
+      viewportHeight = height
       renderer.setPixelRatio(ratio)
       renderer.setSize(width, height, false)
       frameCamera(width, height)
       castLight(width, height, backPlane)
-      catcher.scale.set(
-        width * SCNRendererMetrics.shadowMargin,
-        height * SCNRendererMetrics.shadowMargin,
-        1
-      )
-      catcher.position.set(width / 2, height / 2, backPlane)
+      if (catchesShadows) {
+        catcher.scale.set(
+          width * SCNRendererMetrics.shadowMargin,
+          height * SCNRendererMetrics.shadowMargin,
+          1
+        )
+        catcher.position.set(width / 2, height / 2, backPlane)
+      }
+    },
+    projectToPlane: (x, y, z, target) => {
+      pointer.set((x / viewportWidth) * 2 - 1, 1 - (y / viewportHeight) * 2)
+      raycaster.setFromCamera(pointer, camera)
+      const reach = (z - raycaster.ray.origin.z) / raycaster.ray.direction.z
+      return target.copy(raycaster.ray.direction).multiplyScalar(reach).add(raycaster.ray.origin)
     },
     render: () => renderer.render(scene, camera),
     dispose: () => renderer.dispose()

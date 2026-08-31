@@ -1,4 +1,4 @@
-import { Group, Mesh, PlaneGeometry, ShapeGeometry, type BufferGeometry } from 'three'
+import { BoxGeometry, Group, Mesh, PlaneGeometry, ShapeGeometry, type BufferGeometry } from 'three'
 import {
   scnNormaliseUV,
   scnRoundedShape,
@@ -77,6 +77,48 @@ export const scnMakeUSBPlug = (materials: SCNMaterials): Group => {
   const shell = new Mesh(contactShell(), materials.nickel)
   shell.castShadow = true
   group.add(shell)
+
+  const tongue = new Mesh(
+    new BoxGeometry(Metrics.tongueWidth, Metrics.tongueLength, Metrics.tongueThickness),
+    materials.cavity
+  )
+  tongue.position.set(
+    0,
+    -Metrics.tongueInset - Metrics.tongueLength / 2,
+    -Metrics.shellHeight / 2 + Metrics.tongueThickness / 2
+  )
+  group.add(tongue)
+
+  const contactSpan = (Metrics.contactCount - 1) * Metrics.contactPitch
+  const contactGeometry = new BoxGeometry(
+    Metrics.contactWidth,
+    Metrics.contactLength,
+    Metrics.contactLift
+  )
+  for (let index = 0; index < Metrics.contactCount; index += 1) {
+    const contact = new Mesh(contactGeometry, materials.gold)
+    contact.position.set(
+      index * Metrics.contactPitch - contactSpan / 2,
+      -Metrics.tongueInset - Metrics.contactLength / 2,
+      tongue.position.z + Metrics.tongueThickness / 2 + Metrics.contactLift / 2
+    )
+    group.add(contact)
+  }
+
+  const latchGeometry = new BoxGeometry(
+    Metrics.latchWidth,
+    Metrics.latchLength,
+    Metrics.contactLift
+  )
+  for (const side of [-1, 1]) {
+    const latch = new Mesh(latchGeometry, materials.cavity)
+    latch.position.set(
+      (side * Metrics.shellWidth) / 4,
+      -Metrics.latchInset,
+      Metrics.shellHeight / 2 + Metrics.contactLift / 2
+    )
+    group.add(latch)
+  }
 
   for (const geometry of [overmoldShell(), overmoldFace(), overmoldBack()]) {
     const part = new Mesh(geometry, materials.housing)

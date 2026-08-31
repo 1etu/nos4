@@ -15,6 +15,16 @@ export interface SCNRopeAxis {
   readonly z: number
 }
 
+export interface SCNRopeCollider {
+  readonly left: number
+  readonly right: number
+  readonly bottom: number
+  readonly top: number
+  readonly back: number
+  readonly front: number
+  readonly radius: number
+}
+
 export interface SCNRope {
   readonly points: readonly SCNRopePoint[]
   readonly segmentLength: number
@@ -22,22 +32,41 @@ export interface SCNRope {
   setAnchorAxis: (axis: SCNRopeAxis) => void
   setTailAxis: (axis: SCNRopeAxis) => void
   setTail: (x: number, y: number, z: number) => void
-  setFloor: (y: number) => void
-  setBackPlane: (z: number) => void
+  setTable: (z: number) => void
   setThickness: (radius: number) => void
+  setColliders: (colliders: readonly SCNRopeCollider[]) => void
   holdTail: (held: boolean) => void
   lockTail: (locked: boolean) => void
-  reset: (x: number, y: number, z: number) => void
+  reset: (x: number, y: number, z: number, tailX: number, tailY: number, tailZ: number) => void
   step: (elapsed: number) => void
   energy: () => number
 }
 
+const clamp = (value: number, minimum: number, maximum: number): number =>
+  Math.max(minimum, Math.min(maximum, value))
+
+const pointCount = (length: number, pixelsPerMillimetre: number): number =>
+  clamp(
+    Math.ceil(length / (SCNRopeMetrics.segmentMillimetres * pixelsPerMillimetre)) + 1,
+    SCNRopeMetrics.minimumPointCount,
+    SCNRopeMetrics.maximumPointCount
+  )
+
+const bezier = (start: number, control: number, end: number, t: number): number => {
+  const a = 1 - t
+  return a * a * start + 2 * a * t * control + t * t * end
+}
+
 export const scnMakeRope = (length: number, pixelsPerMillimetre: number): SCNRope => {
-  const count = SCNRopeMetrics.pointCount
+  const count = pointCount(length, pixelsPerMillimetre)
   const segmentLength = length / (count - 1)
-  const gravity = -SCNRopeMetrics.gravityMillimetres * pixelsPerMillimetre
+  const gravity = SCNRopeMetrics.gravityMillimetres * pixelsPerMillimetre
+  const contactBand = SCNRopeMetrics.contactBandMillimetres * pixelsPerMillimetre
+  const minimumBendRadius =
+    SCNRopeMetrics.minimumBendRadiusMillimetres * pixelsPerMillimetre
+  const maximumTurn = Math.min(segmentLength / minimumBendRadius, Math.PI * 0.46)
+  const minimumOuterSpan = segmentLength * 2 * Math.cos(maximumTurn / 2)
   const points: SCNRopePoint[] = []
-  const creases: number[] = []
   let anchorX = 0
   let anchorY = 0
   let anchorZ = 0
@@ -46,153 +75,63 @@ export const scnMakeRope = (length: number, pixelsPerMillimetre: number): SCNRop
   let tailZ = 0
   let tailHeld = false
   let tailLocked = false
-  let anchorAxis: SCNRopeAxis = { x: 0, y: -1, z: 0 }
-  let tailAxis: SCNRopeAxis = { x: 0, y: -1, z: 0 }
-  let floorY = Number.NEGATIVE_INFINITY
-  let backZ = Number.NEGATIVE_INFINITY
+  let tableZ = Number.NEGATIVE_INFINITY
   let thickness = 0
   let pending = 0
+  let colliders: readonly SCNRopeCollider[] = []
+  let anchorAxis: SCNRopeAxis = { x: 0, y: -1, z: 0 }
+  let tailAxis: SCNRopeAxis = { x: 0, y: -1, z: 0 }
 
-  const reset = (x: number, y: number, z: number) => {
+  const reset = (x: number, y: number, z: number, tx: number, ty: number, tz: number) => {
     anchorX = x
     anchorY = y
     anchorZ = z
+    tailX = tx
+    tailY = ty
+    tailZ = tz
     points.length = 0
-    creases.length = 0
-    let layX = x
-    let layY = y
-    for (let i = 0; i < count; i += 1) {
-      points.push({ x: layX, y: layY, z, px: layX, py: layY, pz: z })
-      creases.push(segmentLength * 2)
-      if (layY - segmentLength >= floorY) {
-        layY -= segmentLength
-        continue
-      }
-      layY = Math.max(layY, floorY)
-      layX += segmentLength
+    const controlX = (x + tx) / 2
+    const controlY = Math.min(y, ty) - length * SCNRopeMetrics.initialSagFraction
+    const controlZ = Math.max(tableZ + thickness, Math.min(z, tz))
+    for (let index = 0; index < count; index += 1) {
+      const t = index / (count - 1)
+      const px = bezier(x, controlX, tx, t)
+      const py = bezier(y, controlY, ty, t)
+      const pz = bezier(z, controlZ, tz, t)
+      points.push({ x: px, y: py, z: pz, px, py, pz })
     }
-    tailX = layX
-    tailY = layY
-    tailZ = z
     pending = 0
   }
 
-  reset(0, 0, 0)
+  reset(0, 0, 0, length, 0, 0)
+
+  const isPinned = (index: number): boolean =>
+    index === 0 || (index === count - 1 && (tailHeld || tailLocked))
 
   const integrate = (seconds: number) => {
     const fall = gravity * seconds * seconds
-    let index = 0
-    for (const point of points) {
-      index += 1
-      if (index === 1) continue
-      const height = point.y - floorY
-      const lift =
-        height >= SCNRopeMetrics.contactBand ? 1 : Math.max(height, 0) / SCNRopeMetrics.contactBand
-      const drag = SCNRopeMetrics.floorFriction + (1 - SCNRopeMetrics.floorFriction) * lift
-      const vx = (point.x - point.px) * SCNRopeMetrics.damping * drag
-      const vy = (point.y - point.py) * SCNRopeMetrics.damping
-      const vz = (point.z - point.pz) * SCNRopeMetrics.damping * drag
+    for (let index = 1; index < count; index += 1) {
+      const point = points[index]
+      if (!point || isPinned(index)) continue
+      let vx = (point.x - point.px) * SCNRopeMetrics.damping
+      let vy = (point.y - point.py) * SCNRopeMetrics.damping
+      const vz = (point.z - point.pz) * SCNRopeMetrics.damping
+      const onTable = point.z <= tableZ + thickness + contactBand
+      if (onTable) {
+        const planar = Math.hypot(vx, vy)
+        const friction =
+          planar < thickness * SCNRopeMetrics.staticFriction
+            ? 0
+            : 1 - SCNRopeMetrics.dynamicFriction
+        vx *= friction
+        vy *= friction
+      }
       point.px = point.x
       point.py = point.y
       point.pz = point.z
       point.x += vx
-      point.y += vy + fall * lift
-      point.z += vz
-      if (point.y >= floorY) continue
-      point.y = floorY
-      point.py = floorY - vy * SCNRopeMetrics.floorRestitution
-    }
-  }
-
-  const link = () => {
-    let previous: SCNRopePoint | undefined
-    let index = 0
-    for (const point of points) {
-      index += 1
-      if (!previous) {
-        previous = point
-        continue
-      }
-      const dx = point.x - previous.x
-      const dy = point.y - previous.y
-      const dz = point.z - previous.z
-      const gap = Math.max(Math.hypot(dx, dy, dz), SCNRopeMetrics.minimumSeparation)
-      const share = (gap - segmentLength) / gap / 2
-      const cx = dx * share
-      const cy = dy * share
-      const cz = dz * share
-      if (index > 2) {
-        previous.x += cx
-        previous.y += cy
-        previous.z += cz
-      }
-      point.x -= cx
-      point.y -= cy
-      point.z -= cz
-      previous = point
-    }
-  }
-
-  const bend = () => {
-    let back: SCNRopePoint | undefined
-    let middle: SCNRopePoint | undefined
-    let index = 0
-    for (const point of points) {
-      index += 1
-      if (back && middle) {
-        const slot = index - 2
-        const dx = point.x - back.x
-        const dy = point.y - back.y
-        const dz = point.z - back.z
-        const spread = Math.max(Math.hypot(dx, dy, dz), SCNRopeMetrics.minimumSeparation)
-        const rest = creases[slot] ?? segmentLength * 2
-        if (spread < rest * (1 - SCNRopeMetrics.creaseSlack)) {
-          creases[slot] = Math.max(
-            spread / (1 - SCNRopeMetrics.creaseSlack),
-            segmentLength * 2 * SCNRopeMetrics.minimumCreaseFactor
-          )
-        }
-        const target = Math.min(creases[slot] ?? rest, segmentLength * 2)
-        const share = ((spread - target) / spread) * SCNRopeMetrics.bendStiffness
-        if (slot > 1) {
-          back.x += dx * share
-          back.y += dy * share
-          back.z += dz * share
-        }
-        point.x -= dx * share
-        point.y -= dy * share
-        point.z -= dz * share
-      }
-      back = middle
-      middle = point
-    }
-  }
-
-  const collide = () => {
-    const reach = thickness * 2
-    if (reach <= 0) return
-    for (let i = 1; i < count; i += 1) {
-      const a = points[i]
-      if (!a) continue
-      for (let j = i + SCNRopeMetrics.collisionSkip; j < count; j += 1) {
-        const b = points[j]
-        if (!b) continue
-        const dx = b.x - a.x
-        const dy = b.y - a.y
-        const dz = b.z - a.z
-        const gap = dx * dx + dy * dy + dz * dz
-        if (gap >= reach * reach || gap <= 0) continue
-        const distance = Math.sqrt(gap)
-        const overlap = reach - distance
-        if (overlap < SCNRopeMetrics.collisionTolerance) continue
-        const share = (overlap / distance / 2) * SCNRopeMetrics.collisionStiffness
-        a.x -= dx * share
-        a.y -= dy * share
-        a.z -= dz * share
-        b.x += dx * share
-        b.y += dy * share
-        b.z += dz * share
-      }
+      point.y += vy
+      point.z += vz - fall
     }
   }
 
@@ -217,25 +156,61 @@ export const scnMakeRope = (length: number, pixelsPerMillimetre: number): SCNRop
     tail.z += (tailZ - tail.z) * SCNRopeMetrics.dragStiffness
   }
 
-  const stub = () => {
-    if (!tailLocked) return
-    for (let step = 1; step <= SCNRopeMetrics.terminalSpan; step += 1) {
-      const trail = points[count - 1 - step]
-      if (!trail) return
-      trail.x = tailX + tailAxis.x * segmentLength * step
-      trail.y = tailY + tailAxis.y * segmentLength * step
-      trail.z = tailZ + tailAxis.z * segmentLength * step
+  const solveDistance = () => {
+    for (let index = 1; index < count; index += 1) {
+      const a = points[index - 1]
+      const b = points[index]
+      if (!a || !b) continue
+      const dx = b.x - a.x
+      const dy = b.y - a.y
+      const dz = b.z - a.z
+      const distance = Math.max(Math.hypot(dx, dy, dz), SCNRopeMetrics.minimumSeparation)
+      const correction = (distance - segmentLength) / distance
+      const aPinned = isPinned(index - 1)
+      const bPinned = isPinned(index)
+      const aShare = aPinned ? 0 : bPinned ? 1 : 0.5
+      const bShare = bPinned ? 0 : aPinned ? 1 : 0.5
+      a.x += dx * correction * aShare
+      a.y += dy * correction * aShare
+      a.z += dz * correction * aShare
+      b.x -= dx * correction * bShare
+      b.y -= dy * correction * bShare
+      b.z -= dz * correction * bShare
+    }
+  }
+
+  const solveBend = () => {
+    for (let index = 1; index < count - 1; index += 1) {
+      const a = points[index - 1]
+      const b = points[index + 1]
+      if (!a || !b) continue
+      const dx = b.x - a.x
+      const dy = b.y - a.y
+      const dz = b.z - a.z
+      const distance = Math.max(Math.hypot(dx, dy, dz), SCNRopeMetrics.minimumSeparation)
+      if (distance >= minimumOuterSpan) continue
+      const correction =
+        ((minimumOuterSpan - distance) / distance) * SCNRopeMetrics.bendStiffness
+      const aPinned = isPinned(index - 1)
+      const bPinned = isPinned(index + 1)
+      const aShare = aPinned ? 0 : bPinned ? 1 : 0.5
+      const bShare = bPinned ? 0 : aPinned ? 1 : 0.5
+      a.x -= dx * correction * aShare
+      a.y -= dy * correction * aShare
+      a.z -= dz * correction * aShare
+      b.x += dx * correction * bShare
+      b.y += dy * correction * bShare
+      b.z += dz * correction * bShare
     }
   }
 
   const align = (root: SCNRopePoint, limb: SCNRopePoint, axis: SCNRopeAxis, span: number) => {
-    const stiffness = SCNRopeMetrics.terminalStiffness
-    limb.x += (root.x + axis.x * span - limb.x) * stiffness
-    limb.y += (root.y + axis.y * span - limb.y) * stiffness
-    limb.z += (root.z + axis.z * span - limb.z) * stiffness
+    limb.x += (root.x + axis.x * span - limb.x) * SCNRopeMetrics.terminalStiffness
+    limb.y += (root.y + axis.y * span - limb.y) * SCNRopeMetrics.terminalStiffness
+    limb.z += (root.z + axis.z * span - limb.z) * SCNRopeMetrics.terminalStiffness
   }
 
-  const stiffen = () => {
+  const solveTerminals = () => {
     const head = points[0]
     const tail = points[count - 1]
     for (let step = 1; step <= SCNRopeMetrics.terminalSpan; step += 1) {
@@ -246,35 +221,106 @@ export const scnMakeRope = (length: number, pixelsPerMillimetre: number): SCNRop
     }
   }
 
-  const contain = () => {
-    let index = 0
-    for (const point of points) {
-      index += 1
-      if (index === 1) continue
-      if (point.y < floorY) {
-        point.y = floorY
-        point.py = floorY
+  const solveSelfCollision = () => {
+    const reach = thickness * 2
+    const reachSquared = reach * reach
+    if (reach <= 0) return
+    for (let aIndex = 1; aIndex < count; aIndex += 1) {
+      const a = points[aIndex]
+      if (!a) continue
+      for (
+        let bIndex = aIndex + SCNRopeMetrics.selfCollisionSkip;
+        bIndex < count;
+        bIndex += 1
+      ) {
+        const b = points[bIndex]
+        if (!b) continue
+        const dx = b.x - a.x
+        const dy = b.y - a.y
+        const dz = b.z - a.z
+        const gapSquared = dx * dx + dy * dy + dz * dz
+        if (gapSquared >= reachSquared || gapSquared <= 0) continue
+        const distance = Math.sqrt(gapSquared)
+        const correction =
+          ((reach - distance) / distance) * SCNRopeMetrics.collisionStiffness * 0.5
+        if (!isPinned(aIndex)) {
+          a.x -= dx * correction
+          a.y -= dy * correction
+          a.z -= dz * correction
+        }
+        if (!isPinned(bIndex)) {
+          b.x += dx * correction
+          b.y += dy * correction
+          b.z += dz * correction
+        }
       }
-      if (point.z < backZ) {
-        point.z = backZ
-        point.pz = backZ
-      }
+    }
+  }
+
+  const solveTable = () => {
+    const surface = tableZ + thickness
+    for (let index = 1; index < count; index += 1) {
+      const point = points[index]
+      if (!point || point.z >= surface) continue
+      point.z = surface
+      point.pz = Math.min(point.pz, surface)
+    }
+  }
+
+  const solveCollider = (point: SCNRopePoint, collider: SCNRopeCollider) => {
+    const left = collider.left - thickness
+    const right = collider.right + thickness
+    const bottom = collider.bottom - thickness
+    const top = collider.top + thickness
+    const front = collider.front + thickness
+    const back = collider.back - thickness
+    if (
+      point.x <= left ||
+      point.x >= right ||
+      point.y <= bottom ||
+      point.y >= top ||
+      point.z <= back ||
+      point.z >= front
+    ) {
+      return
+    }
+    const distances = [
+      { value: point.x - left, axis: 'x', target: left },
+      { value: right - point.x, axis: 'x', target: right },
+      { value: point.y - bottom, axis: 'y', target: bottom },
+      { value: top - point.y, axis: 'y', target: top },
+      { value: front - point.z, axis: 'z', target: front }
+    ] as const
+    let nearest: (typeof distances)[number] | undefined = distances[0]
+    for (const distance of distances) {
+      if (nearest && distance.value < nearest.value) nearest = distance
+    }
+    if (!nearest) return
+    point[nearest.axis] +=
+      (nearest.target - point[nearest.axis]) * SCNRopeMetrics.collisionStiffness
+  }
+
+  const solveColliders = () => {
+    for (let index = 1; index < count - SCNRopeMetrics.terminalSpan; index += 1) {
+      const point = points[index]
+      if (!point) continue
+      for (const collider of colliders) solveCollider(point, collider)
     }
   }
 
   const substep = (seconds: number) => {
     integrate(seconds)
-    stiffen()
-    for (let pass = 0; pass < SCNRopeMetrics.relaxIterations; pass += 1) {
+    for (let pass = 0; pass < SCNRopeMetrics.solverIterations; pass += 1) {
       pin()
-      stub()
-      link()
-      bend()
+      solveTerminals()
+      solveDistance()
+      solveBend()
+      solveColliders()
+      solveTable()
     }
+    solveSelfCollision()
+    solveTable()
     pin()
-    stub()
-    collide()
-    contain()
   }
 
   return {
@@ -296,14 +342,14 @@ export const scnMakeRope = (length: number, pixelsPerMillimetre: number): SCNRop
       tailY = y
       tailZ = z
     },
-    setFloor: (y) => {
-      floorY = y
-    },
-    setBackPlane: (z) => {
-      backZ = z
+    setTable: (z) => {
+      tableZ = z
     },
     setThickness: (radius) => {
       thickness = radius
+    },
+    setColliders: (next) => {
+      colliders = next
     },
     holdTail: (held) => {
       tailHeld = held
@@ -324,7 +370,7 @@ export const scnMakeRope = (length: number, pixelsPerMillimetre: number): SCNRop
       for (const point of points) {
         total += Math.hypot(point.x - point.px, point.y - point.py, point.z - point.pz)
       }
-      return total / count
+      return total / count / pixelsPerMillimetre
     }
   }
 }
