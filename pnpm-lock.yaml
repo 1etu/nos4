@@ -235,6 +235,12 @@ importers:
 
   packages/Foundation: {}
 
+  packages/GameDoom:
+    dependencies:
+      solid-js:
+        specifier: ^1.9.0
+        version: 1.9.15
+
   packages/GameFlattyBird:
     dependencies:
       '@nos4/avfoundation':
@@ -255,12 +261,6 @@ importers:
       '@nos4/spritekit':
         specifier: workspace:*
         version: link:../SpriteKit
-      solid-js:
-        specifier: ^1.9.0
-        version: 1.9.15
-
-  packages/GameDoom:
-    dependencies:
       solid-js:
         specifier: ^1.9.0
         version: 1.9.15
@@ -297,6 +297,27 @@ importers:
       '@nos4/nsuserdefaults':
         specifier: workspace:*
         version: link:../NSUserDefaults
+      '@nos4/uikit':
+        specifier: workspace:*
+        version: link:../UIKit
+      solid-js:
+        specifier: ^1.9.0
+        version: 1.9.15
+
+  packages/MobileAppStore:
+    dependencies:
+      '@nos4/coreanimation':
+        specifier: workspace:*
+        version: link:../CoreAnimation
+      '@nos4/coregraphics':
+        specifier: workspace:*
+        version: link:../CoreGraphics
+      '@nos4/graphicsservices':
+        specifier: workspace:*
+        version: link:../GraphicsServices
+      '@nos4/textinput':
+        specifier: workspace:*
+        version: link:../TextInput
       '@nos4/uikit':
         specifier: workspace:*
         version: link:../UIKit
@@ -713,15 +734,18 @@ importers:
       '@nos4/foundation':
         specifier: workspace:*
         version: link:../Foundation
-      '@nos4/gameflattybird':
-        specifier: workspace:*
-        version: link:../GameFlattyBird
       '@nos4/gamedoom':
         specifier: workspace:*
         version: link:../GameDoom
+      '@nos4/gameflattybird':
+        specifier: workspace:*
+        version: link:../GameFlattyBird
       '@nos4/mobileaddressbook':
         specifier: workspace:*
         version: link:../MobileAddressBook
+      '@nos4/mobileappstore':
+        specifier: workspace:*
+        version: link:../MobileAppStore
       '@nos4/mobilecal':
         specifier: workspace:*
         version: link:../MobileCal

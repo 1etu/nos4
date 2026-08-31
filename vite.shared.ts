@@ -39,6 +39,7 @@ export const frameworkAliases: Record<string, string> = {
   MobileGameCenter: framework('MobileGameCenter'),
   MobileSMS: framework('MobileSMS'),
   MobilePhone: framework('MobilePhone'),
+  MobileAppStore: framework('MobileAppStore'),
   MobileStore: framework('MobileStore'),
   MobileVoiceMemos: framework('MobileVoiceMemos'),
   NSUserDefaults: framework('NSUserDefaults')

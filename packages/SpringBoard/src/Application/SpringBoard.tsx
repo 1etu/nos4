@@ -35,6 +35,7 @@ import { UIAlertView } from 'UIKit'
  import { ctNetworkReachable } from 'CoreTelephony'
 import { PreferencesApp } from 'Preferences'
 import { StocksApp } from 'MobileStocks'
+import { AppStoreApp } from 'MobileAppStore'
 import { StoreApp } from 'MobileStore'
 import { MobileiPodApp } from 'MobileiPod'
 import { MobileSafariApp } from 'MobileSafari'
@@ -80,6 +81,7 @@ const SafariBundleId = 'com.nos4.mobilesafari'
 const iPodBundleId = 'com.nos4.mobilemusicplayer'
 const StocksBundleId = 'com.nos4.stocks'
 const NotesBundleId = 'com.nos4.mobilenotes'
+const AppStoreBundleId = 'com.nos4.appstore'
 const StoreBundleId = 'com.nos4.mobilestore'
 const VoiceMemosBundleId = 'com.nos4.voicememos'
 const CalculatorBundleId = 'com.nos4.calculator'
@@ -339,6 +341,12 @@ export const SpringBoard = () => {
               >
                 <Match when={app().bundleId === PhotosBundleId}>
                   <PhotosApp />
+                </Match>
+                <Match when={app().bundleId === AppStoreBundleId}>
+                  <AppStoreApp
+                    width={DeviceMetrics.stageWidth}
+                    height={DeviceMetrics.stageHeight}
+                  />
                 </Match>
                 <Match when={app().bundleId === StoreBundleId}>
                   <StoreApp width={DeviceMetrics.stageWidth} />

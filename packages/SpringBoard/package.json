@@ -29,6 +29,7 @@
     "@nos4/mobileslideshow": "workspace:*",
     "@nos4/mobilesms": "workspace:*",
     "@nos4/mobilestocks": "workspace:*",
+    "@nos4/mobileappstore": "workspace:*",
     "@nos4/mobilestore": "workspace:*",
     "@nos4/mobiletimer": "workspace:*",
     "@nos4/mobilevoicememos": "workspace:*",
