@@ -1,41 +1,42 @@
 import { Show } from 'solid-js'
 import { CGImage } from 'CoreGraphics'
-import { StoreMetrics, StorePalette } from '../Support/StoreMetrics'
+import { UISearchFieldMetrics, UISearchFieldPalette } from './UISearchFieldMetrics'
 
 const UISystemFont =
   "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
 
-export const StoreSearchField = (props: {
+export const UISearchField = (props: {
   value: string
+  placeholder?: string
   onInput: (value: string) => void
   onFocus: () => void
   onSubmit: () => void
 }) => (
-  <div class="flex w-full items-center" style={{ padding: `0 ${StoreMetrics.searchFieldInset}px` }}>
+  <div class="flex w-full items-center" style={{ padding: `0 ${UISearchFieldMetrics.inset}px` }}>
     <div
       class="flex flex-1 items-center overflow-hidden"
       style={{
         'border-radius': '9999px',
         background: 'white',
-        border: `0.33px solid ${StorePalette.searchStroke}`,
-        'box-shadow': 'inset 0 1px 3.2px rgba(0,0,0,0.7)',
-        padding: `${StoreMetrics.searchPaddingY}px ${StoreMetrics.searchTrailInset}px ${StoreMetrics.searchPaddingY}px ${StoreMetrics.searchLeadInset}px`,
-        gap: `${StoreMetrics.searchContentSpacing}px`
+        border: `${UISearchFieldMetrics.stroke}px solid ${UISearchFieldPalette.stroke}`,
+        'box-shadow': UISearchFieldPalette.innerShadow,
+        padding: `${UISearchFieldMetrics.paddingY}px ${UISearchFieldMetrics.trailInset}px ${UISearchFieldMetrics.paddingY}px ${UISearchFieldMetrics.leadInset}px`,
+        gap: `${UISearchFieldMetrics.contentSpacing}px`
       }}
     >
       <CGImage
         name="search_icon"
         class="shrink-0"
         style={{
-          width: `${StoreMetrics.searchIconSize}px`,
-          height: `${StoreMetrics.searchIconSize}px`,
-          'margin-left': `${StoreMetrics.searchIconLeading}px`,
+          width: `${UISearchFieldMetrics.iconSize}px`,
+          height: `${UISearchFieldMetrics.iconSize}px`,
+          'margin-left': `${UISearchFieldMetrics.iconLeading}px`,
           'object-fit': 'contain'
         }}
       />
       <input
         value={props.value}
-        placeholder="Search"
+        placeholder={props.placeholder ?? 'Search'}
         spellcheck={false}
         autocomplete="off"
         onInput={(event) => props.onInput(event.currentTarget.value)}
@@ -52,7 +53,7 @@ export const StoreSearchField = (props: {
           outline: 'none',
           background: 'transparent',
           'font-family': UISystemFont,
-          'font-size': `${StoreMetrics.searchFontSize}px`,
+          'font-size': `${UISearchFieldMetrics.fontSize}px`,
           color: 'black'
         }}
       />

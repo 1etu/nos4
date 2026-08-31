@@ -15,5 +15,12 @@ export const UISegmentedControlPalette = {
   selected:
     'linear-gradient(to bottom, rgb(136,160,190) 0%, rgb(88,119,162) 51%, rgb(71,105,153) 51%, rgb(74,108,154) 100%)',
   divider:
-    'linear-gradient(to bottom, rgb(73,85,98) 0%, rgb(92,118,156) 4%, rgb(58,90,136) 51%, rgb(51,84,131) 51%, rgb(37,72,120) 100%)'
+    'linear-gradient(to bottom, rgb(73,85,98) 0%, rgb(92,118,156) 4%, rgb(58,90,136) 51%, rgb(51,84,131) 51%, rgb(37,72,120) 100%)',
+  grayUnselected:
+    'linear-gradient(to bottom, rgb(213,220,224) 0%, rgb(192,201,207) 53%, rgb(178,188,196) 100%)',
+  graySelected: 'linear-gradient(to bottom, rgb(140,154,175) 0%, rgb(101,120,146) 100%)',
+  grayDivider: 'rgb(109,126,145)',
+  grayLabel: 'rgb(74,102,139)',
+  grayLabelShadow: '0 0.66px 0 rgba(255,255,255,0.47)',
+  graySelectedLabelShadow: '0 -0.66px 0 rgba(44,45,46,0.47)'
 } as const

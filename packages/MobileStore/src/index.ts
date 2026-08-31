@@ -6,7 +6,6 @@ export { StoreAlbumDestination } from './Views/StoreAlbumDestination'
 export { StoreArtwork } from './Views/StoreArtwork'
 export { StoreGeniusView } from './Views/StoreGeniusView'
 export { StoreMoreView } from './Views/StoreMoreView'
-export { StoreSearchField } from './Views/StoreSearchField'
 export { StoreSearchView } from './Views/StoreSearchView'
 export { StorePriceButton } from './Views/StorePriceButton'
 export {
