@@ -16,7 +16,7 @@
 
 </div>
 
-![Introducing nOS4](nos4-intro.png)
+![Introducing nOS4](nosmarketingassets/nos4-intro.png)
 
 nOS4 is a recreation of iOS 4, running in the browser.
 
@@ -30,7 +30,7 @@ That craft is worth preserving, and the best way to understand something is to r
 
 ## What's inside
 
-![Home, multitasking, and folders](nos4-main.png)
+![Home, multitasking, and folders](nosmarketingassets/nos4-main.png)
 
 Twenty-three apps — Safari, Mail, Messages, Phone, Maps, iPod, Photos, Camera, Notes,
 Weather, Stocks, Clock, Calculator, Compass, Voice Memos, Contacts, Settings, App Store,
@@ -43,9 +43,9 @@ Underneath sit sixteen frameworks:
 | Foundation | the notification bus and primitives |
 | CoreGraphics | asset manifest |
 | CoreAnimation | timing curves and transitions |
-| GraphicsServices** | touch delivery and the scroller state machine |
-| UIKit** / TextInput | controls and the keyboard |
-| SpringBoard** | lock screen, pages, dock, folders, multitasking |
+| GraphicsServices | touch delivery and the scroller state machine |
+| UIKit / TextInput | controls and the keyboard |
+| SpringBoard | lock screen, pages, dock, folders, multitasking |
 | SpriteKit / GameKit | the game runtime and leaderboards |
 | AVFoundation, CoreLocation, CoreTelephony, SceneKit, … | the rest |
 
@@ -53,31 +53,31 @@ Nothing imports upward. `Foundation` → `CoreGraphics` → `UIKit` → `SpringB
 
 ## The apps
 
-![Safari](nos4-safari.png)
+![Safari](nosmarketingassets/nos4-safari.png)
 
-![Mail](nos4-mail.png)
+![Mail](nosmarketingassets/nos4-mail.png)
 
-![Phone](nos4-phone.png)
+![Phone](nosmarketingassets/nos4-phone.png)
 
-![Maps](nos4-maps.png)
+![Maps](nosmarketingassets/nos4-maps.png)
 
-![iTunes](nos4-itunes.png)
+![iTunes](nosmarketingassets/nos4-itunes.png)
 
-![App Store](nos4-appstore.png)
+![App Store](nosmarketingassets/nos4-appstore.png)
 
-![Game Center](nos4-gamecenter.png)
+![Game Center](nosmarketingassets/nos4-gamecenter.png)
 
-![Weather](nos4-weather.png)
+![Weather](nosmarketingassets/nos4-weather.png)
 
-![Clock](nos4-clock.png)
+![Clock](nosmarketingassets/nos4-clock.png)
 
-![Settings](nos4-settings.png)
+![Settings](nosmarketingassets/nos4-settings.png)
 
-![Doom](nos4-doom.png)
+![Doom](nosmarketingassets/nos4-doom.png)
 
 ## 2010s Rich
 
-![2010s Rich](nos4-feelrich.png)
+![2010s Rich](nosmarketingassets/nos4-feelrich.png)
 
 ## Build
 
