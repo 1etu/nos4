@@ -170,9 +170,9 @@ export const DeviceScene = (props: { children: JSX.Element }) => {
           draggable={false}
           style={{
             position: 'fixed',
-            right: '3vw',
+            right: '1.5vw',
             top: '50%',
-            width: 'min(34vw, 72vh, 720px)',
+            width: 'min(38vw, 80vh, 780px)',
             height: 'auto',
             transform: 'translateY(-50%) rotate(-1deg)',
             'transform-origin': 'center',
