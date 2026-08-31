@@ -36,8 +36,6 @@ Twenty-three apps — Safari, Mail, Messages, Phone, Maps, iPod, Photos, Camera,
 Weather, Stocks, Clock, Calculator, Compass, Voice Memos, Contacts, Settings, App Store,
 iTunes, Game Center and two games.
 
-![Maps](nos4-maps.png)
-
 Underneath sit sixteen frameworks:
 
 | | |
@@ -52,6 +50,30 @@ Underneath sit sixteen frameworks:
 | AVFoundation, CoreLocation, CoreTelephony, SceneKit, … | the rest |
 
 Nothing imports upward. `Foundation` → `CoreGraphics` → `UIKit` → `SpringBoard` → apps.
+
+## The apps
+
+![Safari](nos4-safari.png)
+
+![Mail](nos4-mail.png)
+
+![Phone](nos4-phone.png)
+
+![Maps](nos4-maps.png)
+
+![iTunes](nos4-itunes.png)
+
+![App Store](nos4-appstore.png)
+
+![Game Center](nos4-gamecenter.png)
+
+![Weather](nos4-weather.png)
+
+![Clock](nos4-clock.png)
+
+![Settings](nos4-settings.png)
+
+![Doom](nos4-doom.png)
 
 ## 2010s Rich
 
