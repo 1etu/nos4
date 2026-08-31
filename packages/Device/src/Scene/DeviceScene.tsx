@@ -20,7 +20,8 @@ import { DeviceShell, DeviceShellBody } from '../Support/DeviceMetrics'
 import { DeviceSceneMetrics } from './DeviceSceneMetrics'
 import { DeviceSceneToggle } from './DeviceSceneToggle'
 
-const ArmImage = 'scene/arm.png'
+const ArmImage = 'scene/arm-rich.png'
+const RichPropsImage = 'scene/rich-props.png'
 
 const GripWidth = DeviceSceneMetrics.gripRight - DeviceSceneMetrics.gripLeft
 const GripCentreX = (DeviceSceneMetrics.gripLeft + DeviceSceneMetrics.gripRight) / 2
@@ -118,7 +119,10 @@ export const DeviceScene = (props: { children: JSX.Element }) => {
   return (
     <div style={{ position: 'fixed', inset: '0', overflow: 'hidden' }}>
       <Show when={!uiScreenIsCompact()}>
-        <DeviceSceneToggle hidden={uiScreenSceneHidden()} onChange={uiScreenSetSceneHidden} />
+        <DeviceSceneToggle
+          enabled={!uiScreenSceneHidden()}
+          onChange={(enabled) => uiScreenSetSceneHidden(!enabled)}
+        />
       </Show>
 
       <Show when={mounted() && !landscape()}>
@@ -157,6 +161,26 @@ export const DeviceScene = (props: { children: JSX.Element }) => {
             }}
           />
         </div>
+      </Show>
+
+      <Show when={mounted() && !landscape()}>
+        <img
+          src={`${import.meta.env.BASE_URL}${RichPropsImage}`}
+          alt=""
+          draggable={false}
+          style={{
+            position: 'fixed',
+            right: '3vw',
+            top: '50%',
+            width: 'min(34vw, 72vh, 720px)',
+            height: 'auto',
+            transform: 'translateY(-50%) rotate(-1deg)',
+            'transform-origin': 'center',
+            'pointer-events': 'none',
+            opacity: `${opaque() ? 1 : 0}`,
+            transition: caTransition(['opacity'], fade)
+          }}
+        />
       </Show>
 
       <div

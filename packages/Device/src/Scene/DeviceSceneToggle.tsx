@@ -3,7 +3,7 @@ import { DeviceSceneMetrics } from './DeviceSceneMetrics'
 
 const HelveticaNeue = "'Helvetica Neue Local', 'Helvetica Neue', Helvetica, Arial, sans-serif"
 
-export const DeviceSceneToggle = (props: { hidden: boolean; onChange: (hidden: boolean) => void }) => (
+export const DeviceSceneToggle = (props: { enabled: boolean; onChange: (enabled: boolean) => void }) => (
   <div
     class="flex items-center"
     style={{
@@ -24,8 +24,8 @@ export const DeviceSceneToggle = (props: { hidden: boolean; onChange: (hidden: b
         'user-select': 'none'
       }}
     >
-      Hide 3D Scene
+      Feel 2010s Rich
     </span>
-    <UISwitch on={props.hidden} onChange={props.onChange} />
+    <UISwitch on={props.enabled} onChange={props.onChange} />
   </div>
 )
