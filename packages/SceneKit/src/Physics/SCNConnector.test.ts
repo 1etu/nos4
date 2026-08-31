@@ -29,9 +29,9 @@ describe('Lightning connector guidance', () => {
     assert.equal(alignment.lateralMillimetres, 6)
   })
 
-  test('rejects a connector that points across the port', () => {
+  test('guides a nearby connector that still needs final rotation', () => {
     const alignment = sample({ x: 100, y: 100 }, { x: 1, y: 0 })
-    assert.equal(alignment.guided, false)
+    assert.equal(alignment.guided, true)
     assert.equal(alignment.seatable, false)
   })
 

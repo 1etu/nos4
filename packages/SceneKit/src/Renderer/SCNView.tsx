@@ -44,6 +44,9 @@ const UpAxis = new Vector3(0, 1, 0)
 const mix = (from: number, to: number, progress: number): number =>
   from + (to - from) * progress
 
+const clamp = (value: number, minimum: number, maximum: number): number =>
+  Math.max(minimum, Math.min(maximum, value))
+
 const samplePoint = (points: readonly SCNRopePoint[], progress: number, target: Vector3) => {
   const slot = progress * Math.max(points.length - 1, 0)
   const lower = Math.floor(slot)
@@ -225,10 +228,19 @@ export const SCNView = (props: {
       insertionAxis.copy(outward).negate()
       port.set(props.port.x, viewHeight - props.port.y, 0)
       seatTarget.copy(port).addScaledVector(insertionAxis, SCNLightningPlugMetrics.tabLength * unit())
-      looseTarget
-        .copy(port)
-        .addScaledVector(outward, SCNRendererMetrics.loosePlugOffsetYMillimetres * unit())
-      looseTarget.x += SCNRendererMetrics.loosePlugOffsetXMillimetres * unit()
+      const readyMargin = SCNRendererMetrics.loosePlugViewportMarginMillimetres * unit()
+      const readyX = clamp(
+        props.port.body.left -
+          SCNRendererMetrics.loosePlugSideClearanceMillimetres * unit(),
+        readyMargin,
+        viewWidth - readyMargin
+      )
+      const readyScreenY = clamp(
+        props.port.y + SCNRendererMetrics.loosePlugOffsetYMillimetres * unit(),
+        readyMargin,
+        viewHeight - reach() - readyMargin
+      )
+      looseTarget.set(readyX, viewHeight - readyScreenY, 0)
       looseTarget.z = tableZ + (SCNLightningMetrics.housingThickness / 2) * unit()
     }
 
@@ -276,6 +288,13 @@ export const SCNView = (props: {
       rope.setTail(desiredTail.x, desiredTail.y, desiredTail.z)
       rope.holdTail(true)
       rope.lockTail(locked)
+    }
+
+    const parkPlug = () => {
+      phase = 'free'
+      body.snap(insertionAxis)
+      setBladeInsertion(0)
+      lockTip(looseTarget, true)
     }
 
     const seatPlug = (notify: boolean) => {
@@ -410,9 +429,10 @@ export const SCNView = (props: {
       const distance = Math.hypot(x - seatTarget.x, y - seatTarget.y)
       const guide = SCNConnectorMetrics.guideRadiusMillimetres * unit() * 2
       const lift = 1 - Math.min(distance / guide, 1)
+      const assist = lift * lift * 0.58
       desiredTip.set(
-        x,
-        y,
+        mix(x, seatTarget.x, assist),
+        mix(y, seatTarget.y, assist),
         mix(tableZ + (SCNLightningMetrics.housingThickness / 2) * unit(), 0, lift)
       )
       const stem = reach() - holdPixels
@@ -477,13 +497,22 @@ export const SCNView = (props: {
         wake()
         return
       }
-      if (phase === 'guided' && alignment().seatable) {
+      const releaseDistance = Math.hypot(
+        desiredTip.x - seatTarget.x,
+        desiredTip.y - seatTarget.y
+      ) / unit()
+      if (phase === 'guided' || releaseDistance <= SCNConnectorMetrics.guideRadiusMillimetres) {
         startSeating()
         wake()
         return
       }
       phase = 'free'
-      rope.holdTail(false)
+      const end = tail()
+      if (end) {
+        rope.setTail(end.x, end.y, end.z)
+        rope.holdTail(true)
+        rope.lockTail(true)
+      }
       wake()
     }
 
@@ -491,6 +520,7 @@ export const SCNView = (props: {
       layout()
       rebuildRope(true)
       if (props.plugged) seatPlug(false)
+      else if (!dragging) parkPlug()
       wake()
     }
 
@@ -511,6 +541,7 @@ export const SCNView = (props: {
       layout()
       rebuildRope(true)
       if (props.plugged) seatPlug(false)
+      else if (!dragging) parkPlug()
       wake()
     }
 
@@ -518,6 +549,7 @@ export const SCNView = (props: {
     body.snap(insertionAxis)
     rebuildRope(false)
     if (props.plugged) seatPlug(false)
+    else parkPlug()
     updateScene()
     stage.render()
     connectorStage.render()
@@ -543,10 +575,7 @@ export const SCNView = (props: {
               seatPlug(false)
             }
           } else if (phase === 'seated') {
-            phase = 'free'
-            setBladeInsertion(0)
-            rope.lockTail(false)
-            rope.holdTail(false)
+            parkPlug()
           }
           wake()
         },
@@ -561,6 +590,7 @@ export const SCNView = (props: {
           layout()
           rebuildRope(true)
           if (props.plugged) seatPlug(false)
+          else if (!dragging) parkPlug()
           wake()
         },
         { defer: true }

@@ -25,10 +25,11 @@ export const SCNRendererMetrics = {
   socketVisibleMillimetres: 112,
   socketFaceOffsetMillimetres: 5,
   socketRotationZ: -0.025,
-  loosePlugOffsetXMillimetres: -17,
-  loosePlugOffsetYMillimetres: 34,
+  loosePlugSideClearanceMillimetres: 16,
+  loosePlugOffsetYMillimetres: 16,
+  loosePlugViewportMarginMillimetres: 8,
   cableSlack: 1.1,
   plugSpineSamples: 4,
   settleFrames: 18,
-  grabPaddingMillimetres: 6
+  grabPaddingMillimetres: 10
 } as const

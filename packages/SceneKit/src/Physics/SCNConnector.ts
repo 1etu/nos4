@@ -49,9 +49,7 @@ export const scnMeasureConnector = (sample: SCNConnectorSample): SCNConnectorAli
     lateralMillimetres,
     axialMillimetres,
     angleDegrees,
-    guided:
-      distanceMillimetres <= SCNConnectorMetrics.guideRadiusMillimetres &&
-      angleDegrees <= SCNConnectorMetrics.guideAngleDegrees,
+    guided: distanceMillimetres <= SCNConnectorMetrics.guideRadiusMillimetres,
     seatable:
       lateralMillimetres <= SCNConnectorMetrics.seatRadiusMillimetres &&
       Math.abs(axialMillimetres) <= SCNConnectorMetrics.seatRadiusMillimetres &&

@@ -30,7 +30,7 @@ export const SCNPlugBodyMetrics = {
 } as const
 
 export const SCNConnectorMetrics = {
-  guideRadiusMillimetres: 12,
+  guideRadiusMillimetres: 16,
   guideAngleDegrees: 25,
   seatRadiusMillimetres: 2.5,
   seatAngleDegrees: 12,
