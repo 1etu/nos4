@@ -16,7 +16,7 @@ export interface BannerDefinition {
 export const Banners: readonly BannerDefinition[] = [
   {
     name: 'intro',
-    output: 'nos4-intro.png',
+    output: 'nosmarketingassets/nos4-intro.png',
     panel: {
       headline: 'Introducing nOS4',
       taglineLead: 'Check it out at ',
@@ -26,7 +26,7 @@ export const Banners: readonly BannerDefinition[] = [
   },
   {
     name: 'main',
-    output: 'nos4-main.png',
+    output: 'nosmarketingassets/nos4-main.png',
     panel: {
       headline: 'Home',
       body: 'Every app a tap away, across pages and the dock. Double press Home to switch between what is already running, and drag one icon onto another to file them both in a folder.'
@@ -35,7 +35,7 @@ export const Banners: readonly BannerDefinition[] = [
   },
   {
     name: 'maps',
-    output: 'nos4-maps.png',
+    output: 'nosmarketingassets/nos4-maps.png',
     panel: {
       icon: 'assets/homescreen-icons/maps.png',
       headline: 'Maps',
@@ -45,7 +45,7 @@ export const Banners: readonly BannerDefinition[] = [
   },
   {
     name: 'safari',
-    output: 'nos4-safari.png',
+    output: 'nosmarketingassets/nos4-safari.png',
     panel: {
       icon: 'assets/homescreen-icons/safari.png',
       headline: 'Safari',
@@ -55,7 +55,7 @@ export const Banners: readonly BannerDefinition[] = [
   },
   {
     name: 'mail',
-    output: 'nos4-mail.png',
+    output: 'nosmarketingassets/nos4-mail.png',
     panel: {
       icon: 'assets/homescreen-icons/mail.png',
       headline: 'Mail',
@@ -65,7 +65,7 @@ export const Banners: readonly BannerDefinition[] = [
   },
   {
     name: 'phone',
-    output: 'nos4-phone.png',
+    output: 'nosmarketingassets/nos4-phone.png',
     panel: {
       icon: 'assets/homescreen-icons/phone.png',
       headline: 'Phone',
@@ -75,7 +75,7 @@ export const Banners: readonly BannerDefinition[] = [
   },
   {
     name: 'itunes',
-    output: 'nos4-itunes.png',
+    output: 'nosmarketingassets/nos4-itunes.png',
     panel: {
       icon: 'assets/homescreen-icons/itunes.png',
       headline: 'iTunes',
@@ -85,7 +85,7 @@ export const Banners: readonly BannerDefinition[] = [
   },
   {
     name: 'appstore',
-    output: 'nos4-appstore.png',
+    output: 'nosmarketingassets/nos4-appstore.png',
     panel: {
       icon: 'assets/homescreen-icons/app-store.png',
       headline: 'App Store',
@@ -95,7 +95,7 @@ export const Banners: readonly BannerDefinition[] = [
   },
   {
     name: 'gamecenter',
-    output: 'nos4-gamecenter.png',
+    output: 'nosmarketingassets/nos4-gamecenter.png',
     panel: {
       icon: 'assets/homescreen-icons/game-center.png',
       headline: 'Game Center',
@@ -105,7 +105,7 @@ export const Banners: readonly BannerDefinition[] = [
   },
   {
     name: 'weather',
-    output: 'nos4-weather.png',
+    output: 'nosmarketingassets/nos4-weather.png',
     panel: {
       icon: 'assets/homescreen-icons/weather-fahrenheit.png',
       headline: 'Weather',
@@ -115,7 +115,7 @@ export const Banners: readonly BannerDefinition[] = [
   },
   {
     name: 'clock',
-    output: 'nos4-clock.png',
+    output: 'nosmarketingassets/nos4-clock.png',
     panel: {
       icon: 'assets/homescreen-icons/clock.png',
       headline: 'Clock',
@@ -125,7 +125,7 @@ export const Banners: readonly BannerDefinition[] = [
   },
   {
     name: 'settings',
-    output: 'nos4-settings.png',
+    output: 'nosmarketingassets/nos4-settings.png',
     panel: {
       icon: 'assets/homescreen-icons/settings.png',
       headline: 'Settings',
@@ -135,7 +135,7 @@ export const Banners: readonly BannerDefinition[] = [
   },
   {
     name: 'doom',
-    output: 'nos4-doom.png',
+    output: 'nosmarketingassets/nos4-doom.png',
     panel: {
       icon: 'assets/doom/doomicon.png',
       headline: 'Doom',
