@@ -31,24 +31,196 @@
     />
     <meta name="twitter:image" content="./brand/nos4-og.png" />
     <meta name="twitter:image:alt" content="Introducing nOS4" />
+    <style>
+      .nos4-cta {
+        position: fixed;
+        top: 16px;
+        right: 18px;
+        z-index: 2147483647;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 10px;
+      }
+
+      .nos4-star {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        height: 54px;
+        padding: 0 20px;
+        border-radius: 9px;
+        border: 1px solid rgba(0, 0, 0, 0.55);
+        background: linear-gradient(
+          to bottom,
+          rgb(122, 131, 145) 0%,
+          rgb(78, 87, 101) 50%,
+          rgb(56, 64, 77) 50%,
+          rgb(34, 39, 47) 100%
+        );
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.34),
+          inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+          0 1px 2px rgba(0, 0, 0, 0.45),
+          0 1px 0 rgba(255, 255, 255, 0.45);
+        text-decoration: none;
+        white-space: nowrap;
+        -webkit-tap-highlight-color: transparent;
+        transition:
+          filter 0.15s ease-out,
+          transform 0.06s ease-out;
+      }
+
+      .nos4-star:hover {
+        filter: brightness(1.14);
+      }
+
+      .nos4-star:active {
+        transform: translateY(1px);
+        filter: brightness(0.92);
+        box-shadow:
+          inset 0 2px 4px rgba(0, 0, 0, 0.55),
+          0 1px 0 rgba(255, 255, 255, 0.35);
+      }
+
+      .nos4-star-mark {
+        width: 22px;
+        height: 22px;
+        flex: none;
+        fill: rgb(255, 255, 255);
+        filter: drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.55));
+      }
+
+      .nos4-star-label {
+        font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 17px;
+        font-weight: 700;
+        line-height: 1;
+        color: rgb(255, 255, 255);
+        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.55);
+      }
+
+      .nos4-star-twinkle {
+        width: 18px;
+        height: 18px;
+        flex: none;
+        fill: rgb(255, 214, 87);
+        transform-origin: 50% 50%;
+        animation: nos4-twinkle 2.4s ease-in-out infinite;
+      }
+
+      .nos4-star:hover .nos4-star-twinkle {
+        animation-duration: 0.9s;
+      }
+
+      @keyframes nos4-twinkle {
+        0%,
+        70%,
+        100% {
+          transform: scale(1) rotate(0deg);
+          opacity: 0.85;
+          filter: drop-shadow(0 0 0 rgba(255, 214, 87, 0));
+        }
+        82% {
+          transform: scale(1.35) rotate(18deg);
+          opacity: 1;
+          filter: drop-shadow(0 0 5px rgba(255, 214, 87, 0.9));
+        }
+      }
+
+      .nos4-hunt {
+        display: block;
+        line-height: 0;
+        border-radius: 9px;
+        overflow: hidden;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+        transition: filter 0.15s ease-out;
+      }
+
+      .nos4-hunt:hover {
+        filter: brightness(1.1);
+      }
+
+      .nos4-hunt img {
+        display: block;
+        width: 250px;
+        height: 54px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .nos4-star-twinkle {
+          animation: none;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .nos4-cta {
+          top: 10px;
+          right: 10px;
+          gap: 8px;
+        }
+        .nos4-star {
+          height: 44px;
+          padding: 0 14px;
+          gap: 7px;
+        }
+        .nos4-star-label {
+          font-size: 14px;
+        }
+        .nos4-hunt img {
+          width: 200px;
+          height: 43px;
+        }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
-    <div
-      style="position: fixed; top: 14px; right: 16px; z-index: 2147483647"
-    >
+
+    <div class="nos4-cta">
       <a
-        class="github-button"
+        class="nos4-star"
         href="https://github.com/1etu/nos4"
-        data-color-scheme="no-preference: light; light: light; dark: dark;"
-        data-icon="octicon-star"
-        data-size="large"
-        data-show-count="true"
-        aria-label="Star 1etu/nos4 on GitHub"
-        >Star</a
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Star nOS4 on GitHub"
       >
+        <svg class="nos4-star-mark" viewBox="0 0 16 16" aria-hidden="true">
+          <path
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+               0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+               -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
+               .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+               -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27
+               .68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12
+               .51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48
+               0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+          />
+        </svg>
+        <span class="nos4-star-label">Star on GitHub!</span>
+        <svg class="nos4-star-twinkle" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M12 1.6l3.09 6.26 6.91 1-5 4.87 1.18 6.87L12 17.35l-6.18 3.25L7 13.73l-5-4.87
+               6.91-1L12 1.6z"
+          />
+        </svg>
+      </a>
+
+      <a
+        class="nos4-hunt"
+        href="https://www.producthunt.com/products/nos4?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-nos4"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img
+          alt="nOS4 - A complete IOS4 experience in your browser! | Product Hunt"
+          width="250"
+          height="54"
+          src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1237936&amp;theme=dark&amp;t=1788218312959"
+        />
+      </a>
     </div>
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
