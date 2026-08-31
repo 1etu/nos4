@@ -22,11 +22,7 @@ nOS4 is a recreation of iOS 4, running in the browser.
 
 ## Why
 
-Software used to have weight. Buttons felt like you actually press on them. Switches looked like you could
-flick them. A list sat on linen, a note sat on legal paper, and a reflection under the dock
-told you where the glass was. Every pixel was doing a job.
-
-That craft is worth preserving, and the best way to understand something is to rebuild it. So that's how nos4 born.
+The best way to understand something is to rebuild it. So that's how nos4 born.
 
 ## What's inside
 
