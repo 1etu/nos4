@@ -6,14 +6,14 @@ import {
   Vector3,
   type Material
 } from 'three'
-import type { SCNRope } from '../Physics/SCNRope'
+import type { SCNRopePoint } from '../Physics/SCNRope'
 import { SCNCableMetrics } from '../Support/SCNHardwareMetrics'
 
 const RadialSegments = SCNCableMetrics.radialSegments
 
 export interface SCNCable {
   readonly mesh: Mesh
-  update: (rope: SCNRope, radius: number) => void
+  update: (points: readonly SCNRopePoint[], radius: number) => void
 }
 
 const ring = (count: number): { sin: Float32Array; cos: Float32Array } => {
@@ -71,10 +71,10 @@ export const scnMakeCable = (material: Material, tubularSegments: number): SCNCa
 
   return {
     mesh,
-    update: (rope, radius) => {
-      while (spine.length < rope.points.length) spine.push(new Vector3())
-      spine.length = rope.points.length
-      rope.points.forEach((point, index) => {
+    update: (points, radius) => {
+      while (spine.length < points.length) spine.push(new Vector3())
+      spine.length = points.length
+      points.forEach((point, index) => {
         spine[index]?.set(point.x, point.y, point.z)
       })
       curve.updateArcLengths()

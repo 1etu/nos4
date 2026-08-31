@@ -20,6 +20,7 @@ import {
 import { SCNCableMetrics, SCNLightningMetrics } from '../Support/SCNHardwareMetrics'
 import { scnLoadSurfaces, scnMakeMaterials } from '../Support/SCNMaterials'
 import { SCNRendererMetrics } from './SCNRendererMetrics'
+import { scnTerminalOcclusionSplit } from './SCNCableOcclusion'
 import { scnMakeStage } from './SCNStage'
 
 export interface SCNPhoneBody {
@@ -37,6 +38,14 @@ export interface SCNPortPose {
   readonly outwardX: number
   readonly outwardY: number
   readonly body: SCNPhoneBody
+}
+
+export interface SCNArmMaskPose {
+  readonly src: string
+  readonly left: number
+  readonly top: number
+  readonly width: number
+  readonly height: number
 }
 
 const UpAxis = new Vector3(0, 1, 0)
@@ -60,6 +69,7 @@ const samplePoint = (points: readonly SCNRopePoint[], progress: number, target: 
 
 export const SCNView = (props: {
   port: SCNPortPose
+  armMask: SCNArmMaskPose
   pixelsPerMillimetre: number
   opacity: number
   transition: string
@@ -76,8 +86,12 @@ export const SCNView = (props: {
     const stage = scnMakeStage(rearCanvas, materials.shadow)
     const connectorStage = scnMakeStage(frontCanvas, materials.shadow, false)
 
-    const cable = scnMakeCable(materials.cable, SCNRendererMetrics.tubularSegments)
-    stage.scene.add(cable.mesh)
+    const rearCable = scnMakeCable(materials.cable, SCNRendererMetrics.tubularSegments)
+    const frontCable = scnMakeCable(materials.cable, SCNRendererMetrics.tubularSegments)
+    stage.scene.add(rearCable.mesh)
+    connectorStage.scene.add(frontCable.mesh)
+    frontCable.mesh.visible = false
+    frontCable.mesh.castShadow = false
 
     const receptacle = new Group()
     receptacle.add(scnMakeSocketStrip(materials))
@@ -97,10 +111,13 @@ export const SCNView = (props: {
     const plugPivot = new Group()
     plugPivot.add(plug.group)
     connectorStage.scene.add(plugPivot)
-    const reliefPivot = new Group()
-    plug.group.remove(plug.relief)
-    reliefPivot.add(plug.relief)
-    stage.scene.add(reliefPivot)
+
+    const armMaskCanvas = document.createElement('canvas')
+    const armMaskContext = armMaskCanvas.getContext('2d', { willReadFrequently: true })
+    const armMaskImage = new Image()
+    let armMaskPixels: Uint8ClampedArray | undefined
+    let armMaskWidth = 0
+    let armMaskHeight = 0
 
     const body = scnMakePlugBody()
     const anchor = new Vector3()
@@ -228,7 +245,6 @@ export const SCNView = (props: {
       cordAxis.set(0, -1, 0).transformDirection(adapter.matrixWorld)
 
       plugPivot.scale.setScalar(unit())
-      reliefPivot.scale.setScalar(unit())
       outward.set(props.port.outwardX, -props.port.outwardY, 0).normalize()
       insertionAxis.copy(outward).negate()
       port.set(props.port.x, viewHeight - props.port.y, 0)
@@ -324,7 +340,32 @@ export const SCNView = (props: {
     }
 
     const updateScene = () => {
-      cable.update(rope, SCNCableMetrics.radius * unit())
+      rearCable.update(rope.points, SCNCableMetrics.radius * unit())
+      const split = scnTerminalOcclusionSplit(rope.points, (point) => {
+        if (!armMaskPixels || armMaskWidth === 0 || armMaskHeight === 0) return false
+        const mask = props.armMask
+        if (mask.width <= 0 || mask.height <= 0) return false
+        const radius = SCNCableMetrics.radius * unit()
+        const samples = [
+          [point.x, viewHeight - point.y],
+          [point.x - radius, viewHeight - point.y],
+          [point.x + radius, viewHeight - point.y],
+          [point.x, viewHeight - point.y - radius],
+          [point.x, viewHeight - point.y + radius]
+        ] as const
+        return samples.some(([screenX, screenY]) => {
+          const u = (screenX - mask.left) / mask.width
+          const v = (screenY - mask.top) / mask.height
+          if (u < 0 || u > 1 || v < 0 || v > 1) return false
+          const x = Math.min(Math.floor(u * armMaskWidth), armMaskWidth - 1)
+          const y = Math.min(Math.floor(v * armMaskHeight), armMaskHeight - 1)
+          return (armMaskPixels?.[(y * armMaskWidth + x) * 4 + 3] ?? 0) >= 48
+        })
+      })
+      frontCable.mesh.visible = split !== undefined
+      if (split !== undefined) {
+        frontCable.update(rope.points.slice(split), SCNCableMetrics.radius * unit())
+      }
       const end = tail()
       if (!end) return
       plugPivot.position.set(
@@ -333,8 +374,20 @@ export const SCNView = (props: {
         end.z + body.direction.z * reach()
       )
       plugPivot.quaternion.setFromUnitVectors(UpAxis, body.direction)
-      reliefPivot.position.copy(plugPivot.position)
-      reliefPivot.quaternion.copy(plugPivot.quaternion)
+    }
+
+    const captureArmMask = () => {
+      if (!armMaskContext || armMaskImage.naturalWidth === 0 || armMaskImage.naturalHeight === 0) {
+        return
+      }
+      armMaskWidth = armMaskImage.naturalWidth
+      armMaskHeight = armMaskImage.naturalHeight
+      armMaskCanvas.width = armMaskWidth
+      armMaskCanvas.height = armMaskHeight
+      armMaskContext.clearRect(0, 0, armMaskWidth, armMaskHeight)
+      armMaskContext.drawImage(armMaskImage, 0, 0)
+      armMaskPixels = armMaskContext.getImageData(0, 0, armMaskWidth, armMaskHeight).data
+      wake()
     }
 
     const alignment = () =>
@@ -565,6 +618,9 @@ export const SCNView = (props: {
     stage.render()
     connectorStage.render()
     scnLoadSurfaces(stage.renderer, materials, wake)
+    armMaskImage.addEventListener('load', captureArmMask)
+    armMaskImage.src = props.armMask.src
+    if (armMaskImage.complete) captureArmMask()
     wake()
 
     window.addEventListener('pointerdown', onPointerDown, true)
@@ -619,6 +675,8 @@ export const SCNView = (props: {
       rearCanvas.removeEventListener('webglcontextrestored', onContextRestored)
       frontCanvas.removeEventListener('webglcontextlost', onContextLost)
       frontCanvas.removeEventListener('webglcontextrestored', onContextRestored)
+      armMaskImage.removeEventListener('load', captureArmMask)
+      armMaskImage.src = ''
       stage.dispose()
       connectorStage.dispose()
     })

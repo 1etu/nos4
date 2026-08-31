@@ -162,6 +162,13 @@ export const DeviceScene = (props: { children: JSX.Element }) => {
             }
           }}
           pixelsPerMillimetre={(PhoneBodyWidth * scale()) / PhoneWidthMillimetres}
+          armMask={{
+            src: `${import.meta.env.BASE_URL}${ArmImage}`,
+            left: sceneX(0),
+            top: sceneY(0),
+            width: DeviceSceneMetrics.armWidth * scale(),
+            height: DeviceSceneMetrics.armHeight * scale()
+          }}
           opacity={opaque() ? 1 : 0}
           transition={caTransition(['opacity'], fade)}
           plugged={plugged()}
