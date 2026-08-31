@@ -3,3 +3,6 @@ apps/*/dist/
 .env
 *.log
 .env.*
+the-oldos-project/
+/*.png
+!/nos4-*.png

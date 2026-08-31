@@ -7,6 +7,7 @@
     "build": "pnpm --filter @nos4/phone build",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test:scene": "bun test packages/SceneKit/src/Physics",
+    "banner": "node --experimental-strip-types tools/BannerGen/src/main.ts",
     "proxy": "node --experimental-strip-types tools/WebProxy/src/main.ts",
     "service": "node --env-file-if-exists=.env --experimental-strip-types services/GameCenterService/src/main.ts"
   },

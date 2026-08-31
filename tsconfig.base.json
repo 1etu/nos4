@@ -53,6 +53,7 @@
       "MobileGameCenter": ["packages/MobileGameCenter/src/index.ts"],
       "MobileSMS": ["packages/MobileSMS/src/index.ts"],
       "MobilePhone": ["packages/MobilePhone/src/index.ts"],
+      "MobileAppStore": ["packages/MobileAppStore/src/index.ts"],
       "MobileStore": ["packages/MobileStore/src/index.ts"],
       "MobileVoiceMemos": ["packages/MobileVoiceMemos/src/index.ts"],
       "NSUserDefaults": ["packages/NSUserDefaults/src/index.ts"]

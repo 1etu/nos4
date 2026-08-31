@@ -23,6 +23,7 @@ export { UISwitch } from './Switch/UISwitch'
 export type { UISwitchTone } from './Switch/UISwitch'
 export { UISwitchMetrics, UISwitchPalette } from './Switch/UISwitchMetrics'
 export { UISegmentedControl } from './SegmentedControl/UISegmentedControl'
+export type { UISegmentedControlTone } from './SegmentedControl/UISegmentedControl'
 export {
   UISegmentedControlMetrics,
   UISegmentedControlPalette
@@ -71,3 +72,5 @@ export {
   UIDeviceBatteryLevelDidChange,
   UIDeviceBatteryStateDidChange
 } from './Device/UIDeviceNotifications'
+export { UISearchField } from './SearchField/UISearchField'
+export { UISearchFieldMetrics, UISearchFieldPalette } from './SearchField/UISearchFieldMetrics'

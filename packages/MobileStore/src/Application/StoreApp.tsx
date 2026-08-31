@@ -4,6 +4,7 @@ import {
   UINavigationBar,
   UIPinstripeBackground,
   UIScrollView,
+  UISearchField,
   UISegmentedControl,
   UISegmentedControlMetrics,
   UIStatusBar
@@ -14,7 +15,6 @@ import { StoreAlbumDestination } from '../Views/StoreAlbumDestination'
 import { StoreGeniusView } from '../Views/StoreGeniusView'
 import { StoreMoreView } from '../Views/StoreMoreView'
 import { StoreMusicView } from '../Views/StoreMusicView'
-import { StoreSearchField } from '../Views/StoreSearchField'
 import { StoreSearchView } from '../Views/StoreSearchView'
 import { StoreTabBar, type StoreTab } from '../Views/StoreTabBar'
 import { StoreMetrics, StorePalette } from '../Support/StoreMetrics'
@@ -107,7 +107,7 @@ export const StoreApp = (props: { width: number }) => {
     }
     if (tab() === 'Search') {
       return (
-        <StoreSearchField
+        <UISearchField
           value={query()}
           onInput={typeQuery}
           onFocus={() => setEditing(query().length > 0 ? 'Active' : 'ActiveEmpty')}
