@@ -34,6 +34,7 @@ export const SCNConnectorMetrics = {
   guideAngleDegrees: 25,
   seatRadiusMillimetres: 2.5,
   seatAngleDegrees: 12,
+  seatedClearanceMillimetres: 0.55,
   seatingSeconds: 0.16,
   extractionMillimetres: 7.7,
   releaseMillimetres: 9.2

@@ -42,7 +42,8 @@ const PhoneCornerRadiusMillimetres = 3.8
 
 const PortCentreX =
   DeviceLeft + (DeviceShell.portLeft + DeviceShell.portWidth / 2) * DeviceScale
-const PortCentreY = DeviceTop + DeviceShell.portTop * DeviceScale
+const PortPlaneY =
+  DeviceTop + (DeviceShell.portTop + DeviceShell.portHeight) * DeviceScale
 const PhoneBodyLeft = DeviceLeft + BodyLeft * DeviceScale
 const PhoneBodyTop = DeviceTop + BodyTop * DeviceScale
 const PhoneBodyRight = PhoneBodyLeft + BodyWidth * DeviceScale
@@ -146,7 +147,7 @@ export const DeviceScene = (props: { children: JSX.Element }) => {
         <SCNView
           port={{
             x: sceneX(PortCentreX),
-            y: sceneY(PortCentreY),
+            y: sceneY(PortPlaneY),
             outwardX: 0,
             outwardY: 1,
             body: {

@@ -97,6 +97,10 @@ export const SCNView = (props: {
     const plugPivot = new Group()
     plugPivot.add(plug.group)
     connectorStage.scene.add(plugPivot)
+    const reliefPivot = new Group()
+    plug.group.remove(plug.relief)
+    reliefPivot.add(plug.relief)
+    stage.scene.add(reliefPivot)
 
     const body = scnMakePlugBody()
     const anchor = new Vector3()
@@ -224,10 +228,15 @@ export const SCNView = (props: {
       cordAxis.set(0, -1, 0).transformDirection(adapter.matrixWorld)
 
       plugPivot.scale.setScalar(unit())
+      reliefPivot.scale.setScalar(unit())
       outward.set(props.port.outwardX, -props.port.outwardY, 0).normalize()
       insertionAxis.copy(outward).negate()
       port.set(props.port.x, viewHeight - props.port.y, 0)
-      seatTarget.copy(port).addScaledVector(insertionAxis, SCNLightningPlugMetrics.tabLength * unit())
+      seatTarget.copy(port).addScaledVector(
+        insertionAxis,
+        (SCNLightningPlugMetrics.tabLength - SCNConnectorMetrics.seatedClearanceMillimetres) *
+          unit()
+      )
       const readyMargin = SCNRendererMetrics.loosePlugViewportMarginMillimetres * unit()
       const readyX = clamp(
         props.port.body.left -
@@ -324,6 +333,8 @@ export const SCNView = (props: {
         end.z + body.direction.z * reach()
       )
       plugPivot.quaternion.setFromUnitVectors(UpAxis, body.direction)
+      reliefPivot.position.copy(plugPivot.position)
+      reliefPivot.quaternion.copy(plugPivot.quaternion)
     }
 
     const alignment = () =>

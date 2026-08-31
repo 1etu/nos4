@@ -13,6 +13,7 @@ const ContactSpan = (Metrics.contactCount - 1) * Metrics.contactPitch
 export interface SCNLightningPlug {
   readonly group: Group
   readonly blade: Group
+  readonly relief: Mesh
 }
 
 const blade = (materials: SCNMaterials): Group => {
@@ -126,7 +127,7 @@ export const scnMakeLightningPlug = (materials: SCNMaterials): SCNLightningPlug 
   relief.position.y = -Metrics.tabLength - Metrics.housingLength
   group.add(relief)
 
-  return { group, blade: tip }
+  return { group, blade: tip, relief }
 }
 
 export const SCNLightningPlugMetrics = {
