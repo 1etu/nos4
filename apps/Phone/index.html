@@ -33,6 +33,24 @@
     <meta name="twitter:image:alt" content="Introducing nOS4" />
     <style>
       .nos4-cta {
+        --nos4-chip-face: linear-gradient(
+          to bottom,
+          rgb(92, 100, 114) 0%,
+          rgb(58, 65, 77) 48%,
+          rgb(38, 44, 54) 52%,
+          rgb(24, 28, 35) 100%
+        );
+        --nos4-chip-gloss: linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.42) 0%,
+          rgba(255, 255, 255, 0.16) 60%,
+          rgba(255, 255, 255, 0.06) 100%
+        );
+        --nos4-chip-edge: 1px solid rgba(0, 0, 0, 0.6);
+        --nos4-chip-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.3),
+          0 1px 2px rgba(0, 0, 0, 0.45),
+          0 1px 0 rgba(255, 255, 255, 0.45);
         position: fixed;
         top: 16px;
         right: 18px;
@@ -53,19 +71,10 @@
         width: 250px;
         height: 54px;
         border-radius: 9px;
-        border: 1px solid rgba(0, 0, 0, 0.6);
+        border: var(--nos4-chip-edge);
         overflow: hidden;
-        background: linear-gradient(
-          to bottom,
-          rgb(92, 100, 114) 0%,
-          rgb(58, 65, 77) 48%,
-          rgb(38, 44, 54) 52%,
-          rgb(24, 28, 35) 100%
-        );
-        box-shadow:
-          inset 0 1px 0 rgba(255, 255, 255, 0.3),
-          0 1px 2px rgba(0, 0, 0, 0.45),
-          0 1px 0 rgba(255, 255, 255, 0.45);
+        background: var(--nos4-chip-face);
+        box-shadow: var(--nos4-chip-shadow);
         text-decoration: none;
         white-space: nowrap;
         -webkit-tap-highlight-color: transparent;
@@ -81,12 +90,7 @@
         right: 0;
         top: 0;
         height: 54%;
-        background: linear-gradient(
-          to bottom,
-          rgba(255, 255, 255, 0.42) 0%,
-          rgba(255, 255, 255, 0.16) 60%,
-          rgba(255, 255, 255, 0.06) 100%
-        );
+        background: var(--nos4-chip-gloss);
         border-radius: 8px 8px 50% 50% / 8px 8px 20px 20px;
         pointer-events: none;
       }
@@ -198,6 +202,10 @@
         height: 54px;
       }
 
+      .nos4-hunt-mark {
+        display: none;
+      }
+
       @media (prefers-reduced-motion: reduce) {
         .nos4-star::after,
         .nos4-star-twinkle {
@@ -205,23 +213,57 @@
         }
       }
 
-      @media (max-width: 720px) {
+      @media (max-width: 820px) {
         .nos4-cta {
-          top: 10px;
-          right: 10px;
+          top: 8px;
+          right: 8px;
+          flex-direction: row;
+          align-items: center;
           gap: 8px;
         }
-        .nos4-star {
-          width: 200px;
-          height: 43px;
-          gap: 7px;
+
+        .nos4-star,
+        .nos4-hunt {
+          position: relative;
+          box-sizing: border-box;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0;
+          width: 34px;
+          height: 34px;
+          border-radius: 8px;
+          border: var(--nos4-chip-edge);
+          background: var(--nos4-chip-face);
+          box-shadow: var(--nos4-chip-shadow);
         }
-        .nos4-star-label {
-          font-size: 14px;
+
+        .nos4-hunt::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 0;
+          height: 54%;
+          background: var(--nos4-chip-gloss);
+          border-radius: 8px 8px 50% 50% / 8px 8px 14px 14px;
+          pointer-events: none;
         }
+
+        .nos4-star::after,
+        .nos4-star-label,
+        .nos4-star-twinkle,
         .nos4-hunt img {
-          width: 200px;
-          height: 43px;
+          display: none;
+        }
+
+        .nos4-star-mark,
+        .nos4-hunt-mark {
+          display: block;
+          position: relative;
+          z-index: 1;
+          width: 19px;
+          height: 19px;
         }
       }
     </style>
@@ -263,6 +305,7 @@
         href="https://www.producthunt.com/products/nos4?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-nos4"
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="nOS4 on Product Hunt"
       >
         <img
           alt="nOS4 - A complete IOS4 experience in your browser! | Product Hunt"
@@ -270,6 +313,16 @@
           height="54"
           src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1237936&amp;theme=dark&amp;t=1788218312959"
         />
+        <svg class="nos4-hunt-mark" viewBox="0 0 40 40" aria-hidden="true">
+          <path
+            fill="rgb(218, 85, 47)"
+            d="M40 20c0 11.046-8.954 20-20 20S0 31.046 0 20 8.954 0 20 0s20 8.954 20 20z"
+          />
+          <path
+            fill="rgb(255, 255, 255)"
+            d="M22.667 20H17v-6h5.667a3 3 0 0 1 0 6m0-10H13v20h4v-6h5.667a7 7 0 1 0 0-14z"
+          />
+        </svg>
       </a>
     </div>
 
