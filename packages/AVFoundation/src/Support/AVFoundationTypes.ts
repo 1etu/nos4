@@ -33,6 +33,7 @@ export const AVSystemSound = {
   unlock: 'M_SND_UNLOCK',
   videoBegin: 'M_SND_VIDEO_BEGIN',
   videoEnd: 'M_SND_VIDEO_END',
+  photoShutter: 'M_SND_PHOTO_SHUTTER',
   dtmf0: 'M_SND_DTMF_0',
   dtmf1: 'M_SND_DTMF_1',
   dtmf2: 'M_SND_DTMF_2',

@@ -1,4 +1,5 @@
 import { createSignal, Show } from 'solid-js'
+import { AVSystemSound, avPlaySystemSound } from 'AVFoundation'
 import { ckMakeCaptureSession, ckStorageError } from 'CameraKit'
 import { CGImage, CGResizableImage } from 'CoreGraphics'
 import { lastImage, mediaURL } from 'MobileSlideShow'
@@ -15,7 +16,10 @@ export const CameraApp = (props: { width: number; onOpenLibrary: () => void }) =
     return asset ? mediaURL(asset) : undefined
   }
   const shutter = () => {
-    if (mode() === 'photo') return void camera.takePhoto()
+    if (mode() === 'photo') {
+      if (!camera.busy() && camera.ready()) avPlaySystemSound(AVSystemSound.photoShutter)
+      return void camera.takePhoto()
+    }
     if (camera.recording()) return camera.stopRecording()
     void camera.startRecording()
   }

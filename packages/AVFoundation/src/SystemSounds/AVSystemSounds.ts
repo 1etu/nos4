@@ -17,6 +17,7 @@ const Registry: Readonly<Record<AVSystemSoundValue, AVSystemSoundEntry>> = {
   M_SND_UNLOCK: entry('unlock', 1),
   M_SND_VIDEO_BEGIN: entry('begin_video_record', 0.255),
   M_SND_VIDEO_END: entry('end_video_record', 0.248),
+  M_SND_PHOTO_SHUTTER: entry('photoShutter', 0.298),
   M_SND_DTMF_0: entry('dtmf_0', 0.228),
   M_SND_DTMF_1: entry('dtmf_1', 0.229),
   M_SND_DTMF_2: entry('dtmf_2', 0.228),

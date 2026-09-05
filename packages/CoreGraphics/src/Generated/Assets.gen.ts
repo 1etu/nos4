@@ -1147,6 +1147,7 @@ export const Sounds = {
   dtmf_pound: 'sounds/dtmf-pound.caf',
   dtmf_star: 'sounds/dtmf-star.caf',
   end_video_record: 'sounds/end_video_record.caf',
+  photoShutter: 'sounds/photoShutter.caf',
   sfx_die: 'sounds/sfx_die.wav',
   sfx_hit: 'sounds/sfx_hit.wav',
   sfx_point: 'sounds/sfx_point.wav',
