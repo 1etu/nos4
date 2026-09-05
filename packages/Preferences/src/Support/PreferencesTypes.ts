@@ -17,7 +17,8 @@ export const PreferencesBinding = {
   cellularData: 'cellularData',
   dataRoaming: 'dataRoaming',
   bluetooth: 'bluetooth',
-  autoBrightness: 'autoBrightness'
+  autoBrightness: 'autoBrightness',
+  webTimeTravel: 'webTimeTravel'
 } as const
 
 export type PreferencesBindingValue =

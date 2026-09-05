@@ -7,6 +7,7 @@ export interface ApplicationRecord {
   readonly category: string
   readonly smallIcon?: AssetName
   readonly requiresData?: boolean
+  readonly url?: string
 }
 
 const DataApplications: readonly string[] = [
@@ -17,8 +18,11 @@ const DataApplications: readonly string[] = [
   'maps',
   'weather',
   'stocks',
-  'mobilemail'
+  'mobilemail',
+  'star'
 ]
+
+const RepositoryURL = 'https://github.com/1etu/nos4'
 
 const application = (
   slug: string,
@@ -33,6 +37,17 @@ const application = (
   category,
   ...(smallIcon ? { smallIcon } : {}),
   ...(DataApplications.includes(slug) ? { requiresData: true } : {})
+})
+
+const link = (
+  slug: string,
+  displayName: string,
+  icon: AssetName,
+  category: string,
+  url: string
+): ApplicationRecord => ({
+  ...application(slug, displayName, icon, category),
+  url
 })
 
 export const CalendarBundleId = 'com.nos4.mobilecal'
@@ -51,7 +66,8 @@ export const HomeScreenApplications: readonly ApplicationRecord[] = [
   application('gamecenter', 'Game Center', 'Game_Center', 'Games'),
   application('flattybird', 'Flatty Bird', 'FlattyBirdIcon', 'Games'),
   application('doom', 'Doom', 'DoomIcon', 'Games'),
-  application('preferences', 'Settings', 'Settings', 'Utilities')
+  application('preferences', 'Settings', 'Settings', 'Utilities'),
+  link('star', 'Star!', 'StarIcon', 'Social', RepositoryURL)
 ]
 
 export const FolderApplications: readonly ApplicationRecord[] = [

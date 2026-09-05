@@ -150,9 +150,32 @@ export const SpringBoard = () => {
     for (const cancel of pending.current) cancel()
   })
 
+  const openLink = (url: string, zoomGrid: boolean) => {
+    window.open(url, '_blank', 'noopener,noreferrer')
+    setKeyboardVisible(false)
+    setMultitasking(false)
+    setJiggling(false)
+    setEditing(false)
+    if (!zoomGrid) return
+    setAnimation(caAnimation(CATransitionDuration.appLaunch, CAMediaTimingFunction.linear))
+    setAppsScale(SpringBoardMetrics.appsScaleMax)
+    setDockOffset(SpringBoardMetrics.dockOffsetMax)
+    schedule(CATransitionDuration.appLaunch, () => {
+      setAnimation(
+        caAnimation(CATransitionDuration.appExitRestore, CAMediaTimingFunction.linear)
+      )
+      setAppsScale(1)
+      setDockOffset(0)
+    })
+  }
+
   const launch = (app: ApplicationRecord, zoomGrid = true) => {
     if (app.requiresData === true && !ctNetworkReachable()) {
       setUnreachable(true)
+      return
+    }
+    if (app.url !== undefined) {
+      openLink(app.url, zoomGrid)
       return
     }
     setKeyboardVisible(false)

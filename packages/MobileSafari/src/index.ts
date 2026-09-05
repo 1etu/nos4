@@ -32,3 +32,11 @@ export {
   BlankPage
 } from './Support/MobileSafariService'
 export type { WebPage, WebTransport } from './Support/MobileSafariService'
+export {
+  SafariTimeTravel,
+  MobileHosts,
+  archivedURL,
+  originalURL,
+  mobileURL,
+  isArchivedURL
+} from './Support/SafariTimeTravel'
