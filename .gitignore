@@ -6,3 +6,4 @@ apps/*/dist/
 .env.*
 the-oldos-project/
 /*.png
+.wrangler/
