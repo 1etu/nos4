@@ -1,6 +1,8 @@
 import { createSignal } from 'solid-js'
 import { NSUserDefaults } from 'NSUserDefaults'
+import { uiWebViewTimeTravel } from 'UIKit'
 import { MobileSafariMetrics } from './MobileSafariMetrics'
+import { archivedURL, originalURL } from './SafariTimeTravel'
 
 const PagesKey = 'webpages'
 const BookmarksKey = 'bookmarks'
@@ -141,13 +143,31 @@ export const resolveEntry = (raw: string): string => {
   return `https://${value}`
 }
 
+const WikipediaSearch = 'https://en.wikipedia.org/w/index.php?search='
+const GoogleSearch = 'http://www.google.com/search?q='
+
 export const searchURL = (query: string): string =>
-  `https://en.wikipedia.org/w/index.php?search=${encodeURIComponent(query)}`
+  `${transport() === 'proxy' ? GoogleSearch : WikipediaSearch}${encodeURIComponent(query)}`
+
+const isSearchURL = (url: string): boolean =>
+  url.startsWith(WikipediaSearch) || url.startsWith(GoogleSearch)
 
 export const frameURL = (url: string): string => {
   if (!/^https?:\/\//i.test(url)) return 'about:blank'
-  if (transport() === 'direct') return url
-  return `${ProxyOrigin}/proxy?url=${encodeURIComponent(url)}`
+  const target = uiWebViewTimeTravel() && !isSearchURL(url) ? archivedURL(url) : url
+  if (transport() === 'direct') return target
+  return `${ProxyOrigin}/proxy?url=${encodeURIComponent(target)}`
+}
+
+const ProxyPrefix = `${ProxyOrigin}/proxy?url=`
+
+export const reportedURL = (url: string): string => {
+  if (!url.startsWith(ProxyPrefix)) return originalURL(url)
+  try {
+    return originalURL(decodeURIComponent(url.slice(ProxyPrefix.length)))
+  } catch {
+    return url
+  }
 }
 
 export const useDirectTransport = (): void => {
@@ -165,7 +185,13 @@ export const probeProxy = async (): Promise<void> => {
 
 const SeedBookmarks: Record<string, string> = {
   'http://www.apple.com/': 'Apple',
-  'http://www.yahoo.com/': 'Yahoo!'
+  'http://www.yahoo.com/': 'Yahoo!',
+  'http://www.google.com/': 'Google',
+  'http://en.wikipedia.org/': 'Wikipedia',
+  'http://www.youtube.com/': 'YouTube',
+  'http://www.facebook.com/': 'Facebook',
+  'http://twitter.com/': 'Twitter',
+  'http://www.nytimes.com/': 'The New York Times'
 }
 
 const storedBookmarks = NSUserDefaults.object<Record<string, string>>(BookmarksKey)

@@ -12,7 +12,12 @@ import {
   ctSetWiFiPower,
   ctWiFiPower
 } from 'CoreTelephony'
-import { uiScreenAutoBrightness, uiScreenSetAutoBrightness } from 'UIKit'
+import {
+  uiScreenAutoBrightness,
+  uiScreenSetAutoBrightness,
+  uiWebViewSetTimeTravel,
+  uiWebViewTimeTravel
+} from 'UIKit'
 import { PreferencesBinding, type PreferencesBindingValue } from './PreferencesTypes'
 
 const StorePrefix = 'preferences.'
@@ -27,7 +32,8 @@ const readers: Record<PreferencesBindingValue, () => boolean> = {
   [PreferencesBinding.cellularData]: ctCellularData,
   [PreferencesBinding.dataRoaming]: ctDataRoaming,
   [PreferencesBinding.bluetooth]: ctBluetoothPower,
-  [PreferencesBinding.autoBrightness]: uiScreenAutoBrightness
+  [PreferencesBinding.autoBrightness]: uiScreenAutoBrightness,
+  [PreferencesBinding.webTimeTravel]: uiWebViewTimeTravel
 }
 
 const writers: Record<PreferencesBindingValue, (on: boolean) => void> = {
@@ -36,7 +42,8 @@ const writers: Record<PreferencesBindingValue, (on: boolean) => void> = {
   [PreferencesBinding.cellularData]: ctSetCellularData,
   [PreferencesBinding.dataRoaming]: ctSetDataRoaming,
   [PreferencesBinding.bluetooth]: ctSetBluetoothPower,
-  [PreferencesBinding.autoBrightness]: uiScreenSetAutoBrightness
+  [PreferencesBinding.autoBrightness]: uiScreenSetAutoBrightness,
+  [PreferencesBinding.webTimeTravel]: uiWebViewSetTimeTravel
 }
 
 export const preferencesSwitchValue = (

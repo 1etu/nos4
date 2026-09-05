@@ -450,6 +450,18 @@ export const PreferencesPages: readonly PreferencesPageSpec[] = [
   ]),
 
   page(PreferencesPage.safari, 'Safari', [
+    section(
+      'timeTravel',
+      [
+        toggle('timeTravel', 'Time Travel', true, {
+          binding: PreferencesBinding.webTimeTravel
+        })
+      ],
+      {
+        header: 'Time Travel',
+        footnote: 'Show websites as they looked in 2011,\n courtesy of the Internet Archive.'
+      }
+    ),
     section('search', [chevron('searchEngine', 'Search Engine', undefined, 'Google')], {
       header: 'General'
     }),

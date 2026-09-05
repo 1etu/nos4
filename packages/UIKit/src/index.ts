@@ -45,6 +45,12 @@ export {
 export { UIScreenMetrics, UIScreenDefaultsKey } from './Screen/UIScreenMetrics'
 export { UIScreenIdentifier, UIScreenBrightnessDidChange } from './Screen/UIScreenNotifications'
 export {
+  UIWebViewMetrics,
+  UIWebViewDefaultsKey,
+  uiWebViewTimeTravel,
+  uiWebViewSetTimeTravel
+} from './WebView/UIWebViewSettings'
+export {
   uiWallpaperLock,
   uiWallpaperHome,
   uiWallpaperSet,
