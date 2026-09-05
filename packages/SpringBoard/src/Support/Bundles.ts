@@ -41,7 +41,7 @@ export const HomeScreenApplications: readonly ApplicationRecord[] = [
   application('mobilesms', 'Messages', 'Messages', 'Social'),
   application('mobilecal', 'Calendar', 'Calendar', 'Productivity'),
   application('mobileslideshow', 'Photos', 'Photos', 'Photography'),
-  application('camera', 'Camera', 'Camera', 'Photography'),
+  application('mobilecamera', 'Camera', 'Camera', 'Photography'),
   application('stocks', 'Stocks', 'Stocks', 'Finance'),
   application('maps', 'Maps', 'Maps', 'Navigation'),
   application('weather', 'Weather', 'Weather_Fahrenheit', 'Weather'),

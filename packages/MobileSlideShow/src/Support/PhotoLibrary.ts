@@ -1,4 +1,5 @@
-import { createSignal } from 'solid-js'
+import { createMemo } from 'solid-js'
+import { ckPhotoLibrary, ckDownloadAsset } from 'CameraKit'
 
 export interface PHAsset {
   readonly id: string
@@ -16,7 +17,10 @@ const seed: readonly PHAsset[] = [
   { id: 'video-2', mediaType: 'video', path: 'media/video-2.mp4', duration: 10 }
 ]
 
-const [library, setLibrary] = createSignal<readonly PHAsset[]>(seed)
+const library = createMemo<readonly PHAsset[]>(() => [
+  ...seed,
+  ...ckPhotoLibrary().map((asset) => ({ ...asset, path: '' }))
+])
 
 export const photoLibrary = library
 
@@ -29,8 +33,10 @@ export const videoCount = (): number =>
 export const lastImage = (): PHAsset | undefined =>
   [...library()].reverse().find((asset) => asset.mediaType === 'image')
 
-export const addAsset = (asset: PHAsset): void => {
-  setLibrary([...library(), asset])
+export const downloadAsset = (asset: PHAsset): void => {
+  const captured = ckPhotoLibrary().find((entry) => entry.id === asset.id)
+  const extension = asset.mediaType === 'image' ? 'jpg' : captured?.blob.type.includes('webm') ? 'webm' : 'mp4'
+  ckDownloadAsset(mediaURL(asset), `IMG_${asset.id}.${extension}`)
 }
 
 export const mediaURL = (asset: PHAsset): string =>

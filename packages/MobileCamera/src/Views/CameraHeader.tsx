@@ -54,14 +54,14 @@ export const CameraHeader = (props: {
     <div style={{ 'margin-left': `${CameraMetrics.headerInset}px` }}>
       <CameraCapsule width={CameraMetrics.capsuleWidth}>
         <CGImage name="PLCameraFlashIcon_2only_" />
-        <CapsuleText>Auto</CapsuleText>
+        <CapsuleText>Off</CapsuleText>
       </CameraCapsule>
     </div>
 
     <div class="pointer-events-none absolute inset-0 flex items-center justify-center">
       <div style={{ opacity: `${props.mode === 'photo' ? 1 : 0}` }}>
         <CameraCapsule width={CameraMetrics.hdrCapsuleWidth}>
-          <CapsuleText>HDR On</CapsuleText>
+          <CapsuleText>HDR Off</CapsuleText>
         </CameraCapsule>
       </div>
     </div>
@@ -70,7 +70,7 @@ export const CameraHeader = (props: {
       <Show
         when={props.recording}
         fallback={
-          <PressableButton onClick={props.onFlip}>
+          <PressableButton label='Switch Camera' onClick={props.onFlip}>
             <CGImage
               name="PLCameraToggle_2x"
               style={{

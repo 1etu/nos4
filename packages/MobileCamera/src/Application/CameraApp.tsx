@@ -1,179 +1,95 @@
-import { createSignal, onCleanup, onMount, Show } from 'solid-js'
-import { AVSystemSound, avPlaySystemSound } from 'AVFoundation'
+import { createSignal, Show } from 'solid-js'
+import { ckMakeCaptureSession, ckStorageError } from 'CameraKit'
 import { CGImage, CGResizableImage } from 'CoreGraphics'
-import { addAsset, lastImage, mediaURL } from 'MobileSlideShow'
+import { lastImage, mediaURL } from 'MobileSlideShow'
+import { PressableButton } from '../Controls/PressableButton'
+import { CameraMetrics, CameraPalette } from '../Support/CameraMetrics'
 import { CameraFlipper, type CameraMode } from '../Views/CameraFlipper'
 import { CameraHeader } from '../Views/CameraHeader'
-import { CameraMetrics, CameraPalette } from '../Support/CameraMetrics'
-import { PressableButton } from '../Controls/PressableButton'
-
-const RecordSoundVolume = 0.06
 
 export const CameraApp = (props: { width: number; onOpenLibrary: () => void }) => {
   const [mode, setMode] = createSignal<CameraMode>('photo')
-  const [recording, setRecording] = createSignal(false)
-  const [elapsed, setElapsed] = createSignal(0)
-  const [blink, setBlink] = createSignal(false)
-  const [facing, setFacing] = createSignal<'user' | 'environment'>('environment')
-  const [denied, setDenied] = createSignal(false)
-  const [shot, setShot] = createSignal<string | undefined>()
-
-  let video: HTMLVideoElement | undefined
-  let stream: MediaStream | undefined
-
-  const live = () => facing() === 'user' && !denied()
-
-  const stop = () => {
-    for (const track of stream?.getTracks() ?? []) track.stop()
-    stream = undefined
-    if (video) video.srcObject = null
+  const camera = ckMakeCaptureSession()
+  const thumbnail = () => {
+    const asset = lastImage()
+    return asset ? mediaURL(asset) : undefined
   }
-
-  const begin = async () => {
-    stop()
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user' },
-        audio: false
-      })
-      setDenied(false)
-      if (video) {
-        video.srcObject = stream
-        await video.play().catch(() => undefined)
-      }
-    } catch {
-      setDenied(true)
-    }
-  }
-
-  onMount(() => {
-    const blinker = setInterval(() => setBlink((value) => !value), CameraMetrics.recordBlinkInterval)
-    const ticker = setInterval(() => {
-      if (recording()) setElapsed((value) => value + 1)
-    }, 1000)
-    onCleanup(() => {
-      clearInterval(blinker)
-      clearInterval(ticker)
-      stop()
-    })
-  })
-
-  const flip = () => {
-    if (facing() === 'environment') {
-      setFacing('user')
-      void begin()
-      return
-    }
-    setFacing('environment')
-    setDenied(false)
-    stop()
-  }
-
-  const record = (url: string) => {
-    setShot(url)
-    addAsset({
-      id: `shot-${Date.now()}`,
-      mediaType: 'image',
-      path: '',
-      url,
-      duration: 0
-    })
-  }
-
-  const capturePhoto = () => {
-    if (!live()) {
-      record(`${import.meta.env.BASE_URL}${CameraMetrics.placeholderScene}`)
-      return
-    }
-    if (!video || video.videoWidth === 0) return
-    const canvas = document.createElement('canvas')
-    canvas.width = video.videoWidth
-    canvas.height = video.videoHeight
-    const context = canvas.getContext('2d')
-    if (!context) return
-    context.drawImage(video, 0, 0, canvas.width, canvas.height)
-    record(canvas.toDataURL('image/jpeg', 0.9))
-  }
-
-  const toggleRecording = () => {
-    if (recording()) {
-      setRecording(false)
-      setElapsed(0)
-      avPlaySystemSound(AVSystemSound.videoEnd, RecordSoundVolume)
-      return
-    }
-    setElapsed(0)
-    setRecording(true)
-    avPlaySystemSound(AVSystemSound.videoBegin, RecordSoundVolume)
-  }
-
   const shutter = () => {
-    if (mode() === 'photo') {
-      capturePhoto()
-      return
-    }
-    toggleRecording()
+    if (mode() === 'photo') return void camera.takePhoto()
+    if (camera.recording()) return camera.stopRecording()
+    void camera.startRecording()
   }
-
-  const thumbnail = () => shot() ?? (lastImage() ? mediaURL(lastImage()!) : undefined)
-
+  const selectMode = (next: CameraMode) => {
+    if (camera.busy()) return
+    camera.stopRecording()
+    setMode(next)
+  }
   const shutterIcon = () => {
     if (mode() === 'photo') return 'PLCameraButtonIcon' as const
-    return recording() && blink() ? ('PLCameraButtonRecordOn' as const) : ('PLCameraButtonRecordOff' as const)
+    return camera.recording() && camera.elapsed() % 2 === 0
+      ? 'PLCameraButtonRecordOn' as const
+      : 'PLCameraButtonRecordOff' as const
   }
 
   return (
-    <div class="relative h-full w-full overflow-hidden" style={{ background: 'black' }}>
-      <img
-        src={`${import.meta.env.BASE_URL}${CameraMetrics.placeholderScene}`}
-        alt=""
-        draggable={false}
-        class="absolute inset-0 h-full w-full object-cover"
-        style={{ opacity: `${live() ? 0 : 1}` }}
-      />
-
+    <div class='relative h-full w-full overflow-hidden' style={{ background: 'black' }}>
       <video
-        ref={video}
-        class="absolute inset-0 h-full w-full object-cover"
+        ref={camera.attach}
+        class='absolute inset-0 h-full w-full object-cover'
         playsinline
         muted
         autoplay
         style={{
-          transform: 'scaleX(-1)',
-          opacity: `${live() ? 1 : 0}`
+          transform: camera.facing() === 'user' ? 'scaleX(-1)' : 'none',
+          opacity: `${camera.ready() ? 1 : 0}`
         }}
       />
 
-      <div class="relative flex h-full w-full flex-col">
+      <div class='relative flex h-full w-full flex-col'>
         <CameraHeader
           mode={mode()}
-          recording={recording()}
-          elapsed={elapsed()}
-          onFlip={flip}
+          recording={camera.recording()}
+          elapsed={camera.elapsed()}
+          onFlip={camera.flip}
         />
 
-        <div class="flex-1" />
+        <div class='flex flex-1 items-center justify-center'>
+          <Show when={camera.message() || ckStorageError() || camera.busy()}>
+            <div role='status' style={{
+              padding: `${CameraMetrics.statusPadding}px`,
+              'font-size': `${CameraMetrics.statusFontSize}px`,
+              'text-align': 'center',
+              color: 'white',
+              background: CameraPalette.statusFill
+            }}>
+              <p>{camera.message() || ckStorageError() || 'Please wait…'}</p>
+              <Show when={!camera.ready() && !camera.busy()}>
+                <button type='button' onClick={() => void camera.start()}>Try Again</button>
+              </Show>
+            </div>
+          </Show>
+        </div>
 
         <div
-          class="relative flex items-center"
+          class='relative flex items-center'
           style={{
             height: `${CameraMetrics.toolBarHeight}px`,
             background: CameraPalette.toolBar
           }}
         >
           <div
-            class="flex items-center"
+            class='flex items-center'
             style={{
               width: `${props.width / CameraMetrics.thumbnailGroupDivisor}px`,
               'margin-left': `${CameraMetrics.toolBarInset}px`
             }}
           >
-            <PressableButton onClick={props.onOpenLibrary}>
+            <PressableButton label='Open Photos' onClick={props.onOpenLibrary}>
               <Show
                 when={thumbnail()}
                 fallback={
                   <CGImage
-                    name="PLCameraPreviewPlaceholder"
+                    name='PLCameraPreviewPlaceholder'
                     style={{
                       width: `${CameraMetrics.thumbnailSize}px`,
                       height: `${CameraMetrics.thumbnailSize}px`
@@ -184,7 +100,7 @@ export const CameraApp = (props: { width: number; onOpenLibrary: () => void }) =
                 {(source) => (
                   <img
                     src={source()}
-                    alt=""
+                    alt=''
                     draggable={false}
                     style={{
                       width: `${CameraMetrics.thumbnailSize}px`,
@@ -201,29 +117,32 @@ export const CameraApp = (props: { width: number; onOpenLibrary: () => void }) =
           </div>
 
           <PressableButton
-            class="relative flex items-center justify-center"
+            class='relative flex items-center justify-center'
             style={{
               width: `${props.width / CameraMetrics.shutterDivisor}px`,
               height: `${CameraMetrics.thumbnailSize}px`,
               margin: '0 auto'
             }}
+            disabled={!camera.ready() || camera.busy()}
+            label={mode() === 'photo' ? 'Take Photo' : camera.recording() ? 'Stop Recording' : 'Record Video'}
             onClick={shutter}
             scale={false}
           >
             <CGResizableImage
-              name="PLCameraButtonSilver"
+              name='PLCameraButtonSilver'
               width={props.width / CameraMetrics.shutterDivisor}
               height={CameraMetrics.thumbnailSize}
-              class="absolute inset-0"
+              class='absolute inset-0'
             />
-            <CGImage name={shutterIcon()} class="relative" />
+            <CGImage name={shutterIcon()} class='relative' />
           </PressableButton>
 
           <div style={{ 'margin-right': `${CameraMetrics.toolBarInset}px` }}>
             <CameraFlipper
               width={props.width / CameraMetrics.flipperDivisor}
               mode={mode()}
-              onChange={setMode}
+              disabled={camera.busy()}
+              onChange={selectMode}
             />
           </div>
         </div>

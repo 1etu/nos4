@@ -1,4 +1,5 @@
-import { createSignal, Show } from 'solid-js'
+import { createSignal, onMount, Show } from 'solid-js'
+import { ckLoadPhotoLibrary, ckStorageError } from 'CameraKit'
 import { CAMediaTimingFunction, CATransitionDuration, caAnimation, caTransition } from 'CoreAnimation'
 import { UIStatusBar } from 'UIKit'
 import { AlbumsView } from '../Albums/AlbumsView'
@@ -17,6 +18,7 @@ const DestinationDepth = 2
 const PanelCount = 3
 
 export const PhotosApp = () => {
+  onMount(() => { void ckLoadPhotoLibrary() })
   const [tab, setTab] = createSignal<PhotosTab>('Albums')
   const [depth, setDepth] = createSignal(AlbumsDepth)
   const [selected, setSelected] = createSignal<PHAsset | undefined>()
@@ -112,6 +114,11 @@ export const PhotosApp = () => {
       </Show>
 
       <span class="hidden">{barsHidden() ? '' : ''}</span>
+      <Show when={ckStorageError()}>
+        <div role='status' class='absolute inset-x-0 bottom-0' style={{ color: 'white', background: 'black' }}>
+          {ckStorageError()}
+        </div>
+      </Show>
       <button type="button" class="hidden" onClick={() => setBarsHidden(!barsHidden())} />
     </div>
   )

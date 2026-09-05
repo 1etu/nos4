@@ -1,4 +1,6 @@
 export const CameraMetrics = {
+  statusPadding: 16,
+  statusFontSize: 14,
   headerPaddingTop: 10,
   headerInset: 8,
   capsuleWidth: 80,
@@ -23,12 +25,11 @@ export const CameraMetrics = {
   flipperKnobHeight: 14,
   flipperStackSpacing: 1,
   flipperSnapDuration: 0.1,
-  recordBlinkInterval: 1000,
-  captureSettleDelay: 0.65,
-  placeholderScene: 'media/photo-1.jpg'
+  recordBlinkInterval: 1000
 } as const
 
 export const CameraPalette = {
+  statusFill: 'rgba(0,0,0,0.65)',
   capsuleFill: 'rgba(255,255,255,0.2)',
   capsuleStroke: 'rgba(21,21,21,0.85)',
   capsuleText: 'rgba(21,21,21,0.85)',

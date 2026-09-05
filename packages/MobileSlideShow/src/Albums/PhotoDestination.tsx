@@ -1,7 +1,7 @@
 import { createSignal, Show } from 'solid-js'
 import { CGImage } from 'CoreGraphics'
 import { CAMediaTimingFunction, caAfter, caAnimation, caTransition } from 'CoreAnimation'
-import { mediaURL, photoLibrary, type PHAsset } from '../Support/PhotoLibrary'
+import { downloadAsset, mediaURL, photoLibrary, type PHAsset } from '../Support/PhotoLibrary'
 import { PhotosMetrics, PhotosPalette } from '../Support/PhotosMetrics'
 
 const HideBarsDuration = 0.25
@@ -12,10 +12,12 @@ const DisabledOpacity = 0.25
 const ToolBarButton = (props: {
   icon: 'UIButtonBarAction' | 'UIButtonBarPreviousSlide' | 'UIButtonBarPlay' | 'UIButtonBarPause' | 'UIButtonBarNextSlide' | 'UIButtonBarTrash'
   enabled?: boolean
+  label?: string
   onClick?: () => void
 }) => (
   <button
     type="button"
+    aria-label={props.label}
     class="flex flex-1 items-center justify-center"
     style={{ opacity: `${props.enabled === false ? DisabledOpacity : 1}` }}
     onClick={() => {
@@ -120,7 +122,7 @@ export const PhotoDestination = (props: { asset: PHAsset; onIndexChange: (index:
             }}
           />
           <div class="relative flex w-full items-center">
-            <ToolBarButton icon="UIButtonBarAction" />
+            <ToolBarButton icon='UIButtonBarAction' label='Download' onClick={() => downloadAsset(props.asset)} />
             <div class="flex-1" />
             <ToolBarButton
               icon="UIButtonBarPreviousSlide"
