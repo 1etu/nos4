@@ -4,8 +4,6 @@ import type { CAAnimation } from 'CoreAnimation'
 import { caTransition } from 'CoreAnimation'
 import { FolderIcon } from './FolderIcon'
 import { IconTile } from './IconTile'
-import { uiScreenIsCompact } from 'UIKit'
-import { StarApp } from './StarApp'
 import { applicationForBundle, type ApplicationRecord } from '../Support/Bundles'
 import {
   SBFolderCapacity,
@@ -398,9 +396,6 @@ export const IconPage = (props: {
           )
         }}
       </For>
-      <Show when={props.page === 0 && uiScreenIsCompact()}>
-        <StarApp />
-      </Show>
     </div>
   )
 }

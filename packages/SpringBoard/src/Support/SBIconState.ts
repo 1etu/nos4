@@ -14,6 +14,7 @@ export type SBIconEntry =
 
 const IconStateKey = 'iconState'
 const UtilitiesFolderSlot = 9
+const PageCapacity = 16
 
 export const SBFolderCapacity = 4
 
@@ -60,9 +61,12 @@ const withNewlyInstalled = (saved: SBIconEntry[][]): SBIconEntry[][] => {
   const placed = placedBundles(saved)
   const installed = InstalledApplications.filter((record) => !placed.has(record.bundleId))
   if (installed.length === 0) return saved
-  const added = installed.map((record) => app(record.bundleId))
-  const last = saved.length - 1
-  return saved.map((entries, index) => (index === last ? [...entries, ...added] : entries))
+  const pages = saved.map((entries) => [...entries])
+  for (const record of installed) {
+    const open = pages.find((entries) => entries.length < PageCapacity) ?? pages[pages.length - 1]
+    open?.push(app(record.bundleId))
+  }
+  return pages
 }
 
 const restore = (): SBIconEntry[][] => {

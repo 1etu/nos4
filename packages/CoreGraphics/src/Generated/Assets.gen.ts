@@ -1,4 +1,5 @@
 export const Assets = {
+  StarIcon: 'brand/staricon.png',
   GitHubOriginal: 'brand/githuboriginal.png',
   _02d: 'weather-icons/02d.png',
   _698f3a1f12dac1e6e8c7bda035018c5f: 'image-assets/698f3a1f12dac1e6e8c7bda035018c5f.jpg',
@@ -579,6 +580,7 @@ export const AssetCapInsets: Partial<Record<AssetName, Record<string, number>>> 
 }
 
 export const AssetSize: Record<AssetName, { width: number; height: number }> = {
+  StarIcon: { width: 118, height: 120 },
   GitHubOriginal: { width: 896, height: 896 },
   _02d: { width: 135, height: 135 },
   _698f3a1f12dac1e6e8c7bda035018c5f: { width: 0, height: 0 },
