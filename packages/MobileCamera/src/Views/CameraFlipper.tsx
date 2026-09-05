@@ -1,4 +1,4 @@
-import { createSignal } from 'solid-js'
+import { createEffect, createSignal } from 'solid-js'
 import { CGImage } from 'CoreGraphics'
 import { CameraMetrics, CameraPalette } from '../Support/CameraMetrics'
 
@@ -7,6 +7,7 @@ export type CameraMode = 'photo' | 'video'
 export const CameraFlipper = (props: {
   width: number
   mode: CameraMode
+  disabled?: boolean
   onChange: (mode: CameraMode) => void
 }) => {
   const knobWidth = () => props.width / 3
@@ -15,8 +16,14 @@ export const CameraFlipper = (props: {
   const [offset, setOffset] = createSignal(props.mode === 'video' ? travel() : 0)
   const [dragging, setDragging] = createSignal(false)
   let start = 0
+  createEffect(() => setOffset(props.mode === 'video' ? travel() : 0))
 
   const onPointerDown = (event: PointerEvent) => {
+    if (props.disabled) return
+    if (event.currentTarget instanceof Element) {
+      const bounds = event.currentTarget.getBoundingClientRect()
+      setOffset(Math.min(travel(), Math.max(0, event.clientX - bounds.left - knobWidth() / 2)))
+    }
     start = event.clientX - offset()
     setDragging(true)
     if (event.currentTarget instanceof Element) {
@@ -49,6 +56,16 @@ export const CameraFlipper = (props: {
 
       <div
         class="relative"
+        role='switch'
+        aria-label='Video mode'
+        aria-checked={props.mode === 'video'}
+        aria-disabled={props.disabled}
+        tabIndex={props.disabled ? -1 : 0}
+        onKeyDown={(event) => {
+          if (props.disabled || (event.key !== ' ' && event.key !== 'Enter')) return
+          event.preventDefault()
+          props.onChange(props.mode === 'photo' ? 'video' : 'photo')
+        }}
         style={{
           height: `${CameraMetrics.flipperTrackHeight}px`,
           'border-radius': '9999px',

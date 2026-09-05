@@ -75,7 +75,7 @@ import {
 const HomeScreenPage = 0
 const RecentsKey = 'springboard_recents'
 const PhotosBundleId = 'com.nos4.mobileslideshow'
-const CameraBundleId = 'com.nos4.camera'
+const CameraBundleId = 'com.nos4.mobilecamera'
 const WeatherBundleId = 'com.nos4.weather'
 const SafariBundleId = 'com.nos4.mobilesafari'
 const iPodBundleId = 'com.nos4.mobilemusicplayer'

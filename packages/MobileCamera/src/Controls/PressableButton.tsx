@@ -6,6 +6,8 @@ const PressDuration = 0.08
 
 export const PressableButton = (props: {
   onClick?: () => void
+  disabled?: boolean
+  label?: string
   scale?: boolean
   class?: string
   style?: JSX.CSSProperties
@@ -18,6 +20,8 @@ export const PressableButton = (props: {
   return (
     <button
       type="button"
+      disabled={props.disabled}
+      aria-label={props.label}
       class={props.class}
       style={{
         opacity: `${pressed() ? PressedOpacity : 1}`,

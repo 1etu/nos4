@@ -5,7 +5,7 @@ export {
   photoCount,
   videoCount,
   lastImage,
-  addAsset,
+  downloadAsset,
   mediaURL,
   durationLabel
 } from './Support/PhotoLibrary'

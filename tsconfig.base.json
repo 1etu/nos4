@@ -18,6 +18,7 @@
     "types": ["vite/client", "node"],
     "baseUrl": ".",
     "paths": {
+      "CameraKit": ["packages/CameraKit/src/index.ts"],
       "Foundation": ["packages/Foundation/src/index.ts"],
       "Device": ["packages/Device/src/index.ts"],
       "SpringBoard": ["packages/SpringBoard/src/index.ts"],

@@ -171,6 +171,15 @@ importers:
         specifier: ^1.9.0
         version: 1.9.15
 
+  packages/CameraKit:
+    dependencies:
+      '@nos4/foundation':
+        specifier: workspace:*
+        version: link:../Foundation
+      solid-js:
+        specifier: ^1.9.0
+        version: 1.9.15
+
   packages/Celestial:
     dependencies:
       '@nos4/foundation':
@@ -357,6 +366,9 @@ importers:
 
   packages/MobileCamera:
     dependencies:
+      '@nos4/camerakit':
+        specifier: workspace:*
+        version: link:../CameraKit
       '@nos4/avfoundation':
         specifier: workspace:*
         version: link:../AVFoundation
@@ -543,6 +555,9 @@ importers:
 
   packages/MobileSlideShow:
     dependencies:
+      '@nos4/camerakit':
+        specifier: workspace:*
+        version: link:../CameraKit
       '@nos4/coreanimation':
         specifier: workspace:*
         version: link:../CoreAnimation

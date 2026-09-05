@@ -4,6 +4,7 @@ const framework = (name: string): string =>
   fileURLToPath(new URL(`./packages/${name}/src/index.ts`, import.meta.url))
 
 export const frameworkAliases: Record<string, string> = {
+  CameraKit: framework('CameraKit'),
   Foundation: framework('Foundation'),
   Device: framework('Device'),
   SpringBoard: framework('SpringBoard'),
