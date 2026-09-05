@@ -7,7 +7,8 @@ import {
   DeviceLockButtonPressed,
   DeviceOrientation,
   DeviceOrientationDidChange,
-  DeviceMetrics
+  DeviceMetrics,
+  useDeviceScreenHeight
 } from 'Device'
 import {
   CAMediaTimingFunction,
@@ -109,6 +110,7 @@ const multitaskingAnimation = caAnimation(
 const restingAnimation = caAnimation(CATransitionDuration.appLaunch, CAMediaTimingFunction.linear)
 
 export const SpringBoard = () => {
+  const screenHeight = useDeviceScreenHeight()
   const [locked, setLocked] = createSignal(true)
   const [activeApp, setActiveApp] = createSignal<ApplicationRecord | undefined>()
   const [appsScale, setAppsScale] = createSignal(1)
@@ -345,32 +347,32 @@ export const SpringBoard = () => {
                 <Match when={app().bundleId === AppStoreBundleId}>
                   <AppStoreApp
                     width={DeviceMetrics.stageWidth}
-                    height={DeviceMetrics.stageHeight}
+                    height={screenHeight()}
                   />
                 </Match>
                 <Match when={app().bundleId === StoreBundleId}>
                   <StoreApp width={DeviceMetrics.stageWidth} />
                 </Match>
                 <Match when={app().bundleId === ContactsBundleId}>
-                  <ContactsApp width={DeviceMetrics.stageWidth} height={DeviceMetrics.stageHeight} />
+                  <ContactsApp width={DeviceMetrics.stageWidth} height={screenHeight()} />
                 </Match>
                 <Match when={app().bundleId === MailBundleId}>
-                  <MailApp width={DeviceMetrics.stageWidth} height={DeviceMetrics.stageHeight} />
+                  <MailApp width={DeviceMetrics.stageWidth} height={screenHeight()} />
                 </Match>
                 <Match when={app().bundleId === PreferencesBundleId}>
                   <PreferencesApp
                     width={DeviceMetrics.stageWidth}
-                    height={DeviceMetrics.stageHeight}
+                    height={screenHeight()}
                   />
                 </Match>
                 <Match when={app().bundleId === MapsBundleId}>
-                  <MapsApp width={DeviceMetrics.stageWidth} height={DeviceMetrics.stageHeight} />
+                  <MapsApp width={DeviceMetrics.stageWidth} height={screenHeight()} />
                 </Match>
                 <Match when={app().bundleId === StocksBundleId}>
-                  <StocksApp height={DeviceMetrics.stageHeight} />
+                  <StocksApp height={screenHeight()} />
                 </Match>
                 <Match when={app().bundleId === NotesBundleId}>
-                  <NotesApp width={DeviceMetrics.stageWidth} height={DeviceMetrics.stageHeight} />
+                  <NotesApp width={DeviceMetrics.stageWidth} height={screenHeight()} />
                 </Match>
                 <Match when={app().bundleId === MessagesBundleId}>
                   <MessagesApp width={DeviceMetrics.stageWidth} />
@@ -390,7 +392,7 @@ export const SpringBoard = () => {
                 <Match when={app().bundleId === FlattyBirdBundleId}>
                   <FlattyBirdApp
                     width={DeviceMetrics.stageWidth}
-                    height={DeviceMetrics.stageHeight}
+                    height={screenHeight()}
                     onScores={() => {
                       const centre = SearchApplications.find(
                         (entry) => entry.bundleId === GameCenterBundleId
@@ -401,14 +403,14 @@ export const SpringBoard = () => {
                 </Match>
                 <Match when={app().bundleId === DoomBundleId}>
                   <DoomApp
-                    width={DeviceMetrics.stageHeight}
+                    width={screenHeight()}
                     height={DeviceMetrics.stageWidth}
                   />
                 </Match>
                 <Match when={app().bundleId === CompassBundleId}>
                   <CompassApp
                     width={DeviceMetrics.stageWidth}
-                    height={DeviceMetrics.stageHeight}
+                    height={screenHeight()}
                     onOpenMaps={() => {
                       const maps = HomeScreenApplications.find(
                         (entry) => entry.bundleId === MapsBundleId
@@ -423,7 +425,7 @@ export const SpringBoard = () => {
                 <Match when={app().bundleId === CalculatorBundleId}>
                   <CalculatorApp
                     width={DeviceMetrics.stageWidth}
-                    height={DeviceMetrics.stageHeight}
+                    height={screenHeight()}
                   />
                 </Match>
                 <Match when={app().bundleId === CalendarBundleId}>
@@ -432,22 +434,22 @@ export const SpringBoard = () => {
                 <Match when={app().bundleId === iPodBundleId}>
                   <MobileiPodApp
                     width={DeviceMetrics.stageWidth}
-                    height={DeviceMetrics.stageHeight}
+                    height={screenHeight()}
                   />
                 </Match>
                 <Match when={app().bundleId === SafariBundleId}>
                   <MobileSafariApp
                     width={DeviceMetrics.stageWidth}
-                    height={DeviceMetrics.stageHeight}
+                    height={screenHeight()}
                   />
                 </Match>
                 <Match when={app().bundleId === WeatherBundleId}>
-                  <WeatherApp height={DeviceMetrics.stageHeight} width={DeviceMetrics.stageWidth} />
+                  <WeatherApp height={screenHeight()} width={DeviceMetrics.stageWidth} />
                 </Match>
                 <Match when={app().bundleId === VoiceMemosBundleId}>
                   <MobileVoiceMemosApp
                     width={DeviceMetrics.stageWidth}
-                    height={DeviceMetrics.stageHeight}
+                    height={screenHeight()}
                   />
                 </Match>
                 <Match when={app().bundleId === CameraBundleId}>

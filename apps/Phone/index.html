@@ -2,7 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>nOS4 - Everything you remember</title>
     <link rel="icon" type="image/png" href="./brand/nos4-icon.png" />
     <link rel="apple-touch-icon" href="./brand/nos4-icon.png" />
@@ -213,57 +215,9 @@
         }
       }
 
-      @media (max-width: 820px) {
+      @media (max-width: 820px), (hover: none) and (pointer: coarse) {
         .nos4-cta {
-          top: 8px;
-          right: 8px;
-          flex-direction: row;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .nos4-star,
-        .nos4-hunt {
-          position: relative;
-          box-sizing: border-box;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0;
-          width: 34px;
-          height: 34px;
-          border-radius: 8px;
-          border: var(--nos4-chip-edge);
-          background: var(--nos4-chip-face);
-          box-shadow: var(--nos4-chip-shadow);
-        }
-
-        .nos4-hunt::before {
-          content: "";
-          position: absolute;
-          left: 0;
-          right: 0;
-          top: 0;
-          height: 54%;
-          background: var(--nos4-chip-gloss);
-          border-radius: 8px 8px 50% 50% / 8px 8px 14px 14px;
-          pointer-events: none;
-        }
-
-        .nos4-star::after,
-        .nos4-star-label,
-        .nos4-star-twinkle,
-        .nos4-hunt img {
           display: none;
-        }
-
-        .nos4-star-mark,
-        .nos4-hunt-mark {
-          display: block;
-          position: relative;
-          z-index: 1;
-          width: 19px;
-          height: 19px;
         }
       }
     </style>

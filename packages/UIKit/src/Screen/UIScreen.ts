@@ -4,7 +4,7 @@ import { NSUserDefaults } from 'NSUserDefaults'
 import { UIScreenDefaultsKey, UIScreenMetrics } from './UIScreenMetrics'
 import { UIScreenBrightnessDidChange, UIScreenIdentifier } from './UIScreenNotifications'
 
-const CompactQuery = `(max-width: ${UIScreenMetrics.compactWidth}px)`
+const CompactQuery = `(max-width: ${UIScreenMetrics.compactWidth}px), (hover: none) and (pointer: coarse)`
 
 const compactQuery = window.matchMedia(CompactQuery)
 const [compact, setCompact] = createSignal(compactQuery.matches)

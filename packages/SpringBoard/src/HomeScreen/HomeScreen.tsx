@@ -1,5 +1,5 @@
 import { createEffect, createSignal, on, onCleanup, Show } from 'solid-js'
-import { DeviceContentHeight, DeviceMetrics } from 'Device'
+import { useDeviceScreenHeight, DeviceMetrics } from 'Device'
 import { assetURL } from 'CoreGraphics'
 import { CAMediaTimingFunction, caAnimation, caTransition, type CAAnimation } from 'CoreAnimation'
 import { UIStatusBar , uiWallpaperHome } from 'UIKit'
@@ -53,6 +53,7 @@ export const HomeScreen = (props: {
   onFolderLaunch: (app: ApplicationRecord) => void
 }) => {
   const [drag, setDrag] = createSignal(0)
+  const screenHeight = useDeviceScreenHeight()
   const [openFolder, setOpenFolder] = createSignal<OpenFolder | undefined>()
   const [folderPresented, setFolderPresented] = createSignal(false)
   const [folderOpen, setFolderOpen] = createSignal(false)
@@ -149,7 +150,7 @@ export const HomeScreen = (props: {
   const splitEdge = () => {
     const open = openFolder()
     if (!open) return ''
-    return `polygon(0 ${open.stripTop}px, ${StageWidth}px ${open.stripTop}px, ${StageWidth}px ${DeviceContentHeight}px, 0 ${DeviceContentHeight}px)`
+    return `polygon(0 ${open.stripTop}px, ${StageWidth}px ${open.stripTop}px, ${StageWidth}px ${screenHeight()}px, 0 ${screenHeight()}px)`
   }
 
   const folderPage = (page: number) => {
@@ -226,7 +227,7 @@ export const HomeScreen = (props: {
       <div
         class="pointer-events-none absolute inset-x-0 bottom-0"
         style={{
-          height: `${DeviceContentHeight / SpringBoardMetrics.homeGradientDivisor}px`,
+          height: `${screenHeight() / SpringBoardMetrics.homeGradientDivisor}px`,
           background: 'linear-gradient(to bottom, rgba(158,158,158,0), rgb(34,34,34))',
           'z-index': '3'
         }}
