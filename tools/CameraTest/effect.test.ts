@@ -23,21 +23,33 @@ describe('CameraKit photo effect', () => {
     expect(ckApplyPhotoEffect(input, 32, 32)).toEqual(ckApplyPhotoEffect(input, 32, 32))
   })
 
-  test('keeps midtones within twelve levels of the source', () => {
+  test('lifts midtones slightly and keeps them within a stop of the source', () => {
     const output = ckApplyPhotoEffect(solid(64, 64, 128), 64, 64)
-    for (let i = 0; i < output.length; i += 4) {
-      for (let channel = 0; channel < 3; channel += 1) expect(Math.abs(output[i + channel]! - 128)).toBeLessThan(12)
-    }
+    let sum = 0
+    for (let i = 0; i < output.length; i += 4) sum += output[i + 1]!
+    const mean = sum / (output.length / 4)
+    expect(mean).toBeGreaterThan(128)
+    expect(mean).toBeLessThan(160)
   })
 
-  test('retains monotonic grayscale and highlight headroom', () => {
+  test('retains monotonic grayscale and clips whites like a phone JPEG', () => {
     let previous = -1
     for (let level = 0; level <= 255; level += 1) {
       const output = ckApplyPhotoEffect(solid(1, 1, level), 1, 1)
-      expect(output[1]!).toBeGreaterThanOrEqual(previous)
-      expect(output[1]!).toBeLessThanOrEqual(251)
+      expect(output[1]!).toBeGreaterThanOrEqual(previous - 1)
       previous = output[1]!
     }
+    expect(ckApplyPhotoEffect(solid(1, 1, 255), 1, 1)[1]!).toBeGreaterThanOrEqual(250)
+  })
+
+  test('adds more grain in shadows than in highlights', () => {
+    const spread = (level: number) => {
+      const output = ckApplyPhotoEffect(solid(64, 64, level), 64, 64)
+      let total = 0
+      for (let i = 4; i < output.length; i += 4) total += Math.abs(output[i + 1]! - output[i - 3]!)
+      return total / (output.length / 4 - 1)
+    }
+    expect(spread(40)).toBeGreaterThan(spread(200) * 1.5)
   })
 
   test('keeps a mild warm balance and slight corner falloff', () => {
