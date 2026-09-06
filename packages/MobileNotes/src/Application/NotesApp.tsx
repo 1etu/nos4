@@ -6,7 +6,7 @@ import { NotesDeleteSheet } from '../Views/NotesDeleteSheet'
 import { NotesEditorView } from '../Views/NotesEditorView'
 import { NotesListView } from '../Views/NotesListView'
 import { NotesTitleBar } from '../Views/NotesTitleBar'
-import { NotesMetrics } from '../Support/NotesMetrics'
+import { NotesMetrics, NotesPalette } from '../Support/NotesMetrics'
 import {
   createNote,
   deleteNote,
@@ -66,7 +66,10 @@ export const NotesApp = (props: { width: number; height: number }) => {
   }
 
   return (
-    <div class="relative flex h-full w-full flex-col overflow-hidden">
+    <div
+      class="relative flex h-full w-full flex-col overflow-hidden"
+      style={{ background: NotesPalette.paper }}
+    >
       <UIStatusBar />
 
       <NotesTitleBar

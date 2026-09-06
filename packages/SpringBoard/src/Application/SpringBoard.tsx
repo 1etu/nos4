@@ -18,6 +18,7 @@ import {
   caTransition,
   type CAAnimation
 } from 'CoreAnimation'
+import { cgWarmAssets } from 'CoreGraphics'
 import { CameraApp } from 'MobileCamera'
 import { CalendarApp } from 'MobileCal'
 import { CalculatorApp } from 'MobileCalculator'
@@ -56,6 +57,7 @@ import { HomeScreen, type SBHomeAction } from '../HomeScreen/HomeScreen'
 import { LockScreen } from '../LockScreen/LockScreen'
 import { MultitaskingTray, multitaskingTrayHeight } from '../Switcher/MultitaskingTray'
 import { SBVolumeHUD } from '../HUD/SBVolumeHUD'
+import { sbLaunchAssetsFor } from '../Support/SBLaunchAssets'
 import { SpringBoardMetrics } from '../Support/SpringBoardMetrics'
 import {
   CalendarBundleId,
@@ -178,6 +180,7 @@ export const SpringBoard = () => {
       openLink(app.url, zoomGrid)
       return
     }
+    cgWarmAssets(sbLaunchAssetsFor(app.bundleId))
     setKeyboardVisible(false)
     setMultitasking(false)
     setJiggling(false)
@@ -353,6 +356,7 @@ export const SpringBoard = () => {
             <div
               class="absolute inset-0"
               style={{
+                background: 'black',
                 transform: `scale(${appScale()})`,
                 transition: caTransition(['transform'], appAnimation())
               }}

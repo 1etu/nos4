@@ -49,6 +49,7 @@ export const NotesMetrics = {
 } as const
 
 export const NotesPalette = {
+  paper: 'rgb(251,247,152)',
   rowTitle: 'rgb(160,92,62)',
   rowDate: 'rgb(99,115,142)',
   rowSeparator: 'rgba(78,90,130,0.3)',

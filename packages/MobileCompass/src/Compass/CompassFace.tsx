@@ -14,7 +14,8 @@ const layer = (
   top: '50%',
   width: `${width}px`,
   height: `${height}px`,
-  transform: `rotate(${rotation}deg) translate(${offsetX}px, ${offsetY}px) translate(-50%, -50%)`
+  'transform-origin': `calc(50% - ${offsetX}px) calc(50% - ${offsetY}px)`,
+  transform: `translate(-50%, -50%) translate(${offsetX}px, ${offsetY}px) rotate(${rotation}deg)`
 })
 
 export const CompassFace = (props: { width: number; heading: number }) => {

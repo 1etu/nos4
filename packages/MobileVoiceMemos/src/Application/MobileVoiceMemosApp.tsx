@@ -2,7 +2,7 @@ import { createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { assetURL } from 'CoreGraphics'
 import { avMakeAudioPlayer, AVPlaybackState } from 'AVFoundation'
 import { celMakeAudioRecorder, CELRecorderState } from 'Celestial'
-import { UIStatusBar, UIStatusBarMetrics } from 'UIKit'
+import { UIStatusBar, UIStatusBarMetrics, uiScreenIsCompact } from 'UIKit'
 import { VMBezelFooter } from '../Recorder/VMBezelFooter'
 import { VMRecordingsView } from '../Recordings/VMRecordingsView'
 import {
@@ -10,6 +10,7 @@ import {
   vmRecordings,
   vmRefreshLibrary,
   vmRemoveRecording,
+  vmExportRecording,
   type VMRecordingItem
 } from '../Support/VMLibrary'
 import { VMMetrics } from '../Support/VMMetrics'
@@ -66,9 +67,7 @@ export const MobileVoiceMemosApp = (props: { width: number; height: number }) =>
     }
     const captured = await recorder.stopRecording()
     if (!captured || captured.duration <= 0) return
-    await vmAddRecording(captured)
-    const latest = vmRecordings()[0]
-    if (latest) select(latest)
+    select(await vmAddRecording(captured))
   }
 
   const removeSelected = async () => {
@@ -81,10 +80,24 @@ export const MobileVoiceMemosApp = (props: { width: number; height: number }) =>
     if (next) select(next)
   }
 
-  const share = () => {
+  const share = async () => {
     const item = selected()
-    if (!item || !navigator.share) return
-    void navigator.share({ title: item.title, url: item.source }).catch(() => undefined)
+    if (!item) return
+    if (!uiScreenIsCompact()) {
+      vmExportRecording(item)
+      return
+    }
+    const blob = await fetch(item.source).then((response) => response.blob())
+    const file = new File([blob], item.filename, { type: blob.type })
+    if (navigator.canShare?.({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], title: item.title })
+        return
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') return
+      }
+    }
+    vmExportRecording(item)
   }
 
   return (
@@ -149,7 +162,7 @@ export const MobileVoiceMemosApp = (props: { width: number; height: number }) =>
             }}
             onSeek={(seconds) => player.seek(seconds)}
             onToggleSpeaker={() => setSpeaker(!speaker())}
-            onShare={share}
+            onShare={() => void share()}
             onDelete={() => void removeSelected()}
             onDone={() => setShowRecordings(false)}
           />

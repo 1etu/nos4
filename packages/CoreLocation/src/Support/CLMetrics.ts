@@ -6,7 +6,11 @@ export const CLLocationMetrics = {
   geocodeResultLimit: 12,
   distanceFilterMetres: 8,
   degreesPerRadian: 180 / Math.PI,
-  fallbackAccuracyMetres: 65
+  fallbackAccuracyMetres: 65,
+  fullTurnDegrees: 360,
+  headingSmoothing: 0.18,
+  headingDefaultAccuracy: 15,
+  compassSectors: ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'] as readonly string[]
 } as const
 
 export const CLLocationEndpoint = {

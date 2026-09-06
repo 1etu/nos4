@@ -393,6 +393,9 @@ importers:
       '@nos4/coregraphics':
         specifier: workspace:*
         version: link:../CoreGraphics
+      '@nos4/corelocation':
+        specifier: workspace:*
+        version: link:../CoreLocation
       '@nos4/uikit':
         specifier: workspace:*
         version: link:../UIKit

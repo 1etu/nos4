@@ -13,6 +13,16 @@ export const CompassMetrics = {
   coordinateFontSize: 16,
   buttonHeight: 32,
   buttonRadius: 5.5,
+  promptInsetX: 34,
+  promptTitleFontSize: 19,
+  promptDetailFontSize: 14,
+  promptDetailTopInset: 10,
+  promptDetailMaxWidth: 280,
+  promptButtonTopInset: 22,
+  promptButtonPaddingX: 18,
+  promptButtonFontSize: 14,
+  faceDimOpacity: 0.25,
+  headingGraceMilliseconds: 1200,
   locateGlyphWidth: 19,
   locateGlyphPaddingX: 7,
   infoGlyphWidth: 7,
@@ -50,5 +60,8 @@ export const CompassPalette = {
   toolBarBorder: rgb(0, 0, 0),
   buttonFace:
     'linear-gradient(to bottom, rgb(95,95,95) 0%, rgb(32,32,32) 51%, rgb(8,8,8) 51%, rgb(8,8,8) 100%)',
-  buttonShadow: 'inset 0 0.6px 1.6px rgba(0,0,0,0.7), 0 0.8px 0 rgba(255,255,255,0.28)'
+  buttonShadow: 'inset 0 0.6px 1.6px rgba(0,0,0,0.7), 0 0.8px 0 rgba(255,255,255,0.28)',
+  backdrop: rgb(0, 0, 0),
+  promptScrim: 'rgba(0,0,0,0.72)',
+  promptDetail: 'rgba(255,255,255,0.75)'
 } as const

@@ -29,6 +29,13 @@ export interface CLLocation {
   readonly timestamp: number
 }
 
+export interface CLHeading {
+  readonly magneticHeading: number
+  readonly trueHeading: number
+  readonly headingAccuracy: number
+  readonly timestamp: number
+}
+
 export interface CLPlacemark {
   readonly name: string
   readonly thoroughfare: string
