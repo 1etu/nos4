@@ -6,6 +6,7 @@ import { ContactsAlphabet } from './ContactsMetrics'
 import type { ContactRecord } from './ContactsTypes'
 
 const ContactsKey = 'addressbook.contacts'
+const LegacyPhoneKey = 'contacts'
 
 const make = (
   id: string,
@@ -46,9 +47,44 @@ const seed = (): readonly ContactRecord[] => [
   make('c12', ' Roadside', 'Assistance', '', [['other', '(800) 555-0199']], [])
 ]
 
+interface LegacyPhoneContact {
+  readonly identifier: string
+  readonly givenName: string
+  readonly familyName: string
+  readonly organizationName: string
+  readonly phoneNumbers: readonly { readonly label: string; readonly value: string }[]
+  readonly emailAddresses: readonly { readonly label: string; readonly value: string }[]
+  readonly urlAddresses?: readonly { readonly label: string; readonly value: string }[]
+}
+
+const fromLegacy = (entry: LegacyPhoneContact): ContactRecord => {
+  const labelled = (prefix: string, values: LegacyPhoneContact['phoneNumbers'] | undefined) =>
+    (values ?? []).map(({ label, value }, index) => ({ id: `${prefix}${index}`, label, value }))
+  return {
+    id: entry.identifier,
+    givenName: entry.givenName,
+    familyName: entry.familyName,
+    company: entry.organizationName,
+    phoneNumbers: labelled(`${entry.identifier}-p`, entry.phoneNumbers),
+    emailAddresses: labelled(`${entry.identifier}-e`, entry.emailAddresses),
+    urlAddresses: labelled(`${entry.identifier}-u`, entry.urlAddresses)
+  }
+}
+
+const migrated = (): readonly ContactRecord[] | undefined => {
+  const legacy = NSUserDefaults.object<LegacyPhoneContact[]>(LegacyPhoneKey)
+  if (!legacy || legacy.length === 0) return undefined
+  const records = legacy
+    .filter((entry) => typeof entry?.identifier === 'string')
+    .map(fromLegacy)
+  if (records.length > 0) NSUserDefaults.setObject(ContactsKey, records)
+  NSUserDefaults.removeObject(LegacyPhoneKey)
+  return records.length > 0 ? records : undefined
+}
+
 const stored = NSUserDefaults.object<ContactRecord[]>(ContactsKey)
 const [contacts, setContacts] = createSignal<readonly ContactRecord[]>(
-  stored && stored.length > 0 ? stored : seed()
+  stored && stored.length > 0 ? stored : (migrated() ?? seed())
 )
 
 export const addressBookContacts = contacts
@@ -109,3 +145,18 @@ export const addressBookSearch = (query: string): readonly ContactRecord[] => {
 export const addressBookAdd = (contact: ContactRecord): void => {
   persist([...contacts(), contact])
 }
+
+export const addressBookUpdate = (contact: ContactRecord): void => {
+  if (!contacts().some((entry) => entry.id === contact.id)) {
+    addressBookAdd(contact)
+    return
+  }
+  persist(contacts().map((entry) => (entry.id === contact.id ? contact : entry)))
+}
+
+export const addressBookRemove = (id: string): void => {
+  persist(contacts().filter((entry) => entry.id !== id))
+}
+
+export const addressBookContact = (id: string): ContactRecord | undefined =>
+  contacts().find((entry) => entry.id === id)

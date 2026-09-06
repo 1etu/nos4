@@ -62,6 +62,9 @@ export const ContactsMetrics = {
   addToneCardHeight: 100,
   addLeftIndent: 45,
   addCardGap: 10,
+  deleteButtonHeight: 44,
+  deleteFontSize: 18,
+  disabledOpacity: 0.5,
   dividerWidth: 1,
   navDuration: 0.28,
   pushDelay: 0.25,
@@ -98,7 +101,10 @@ export const ContactsPalette = {
   divider: 'rgb(191,191,191)',
   photoBacking: 'rgb(246,246,250)',
   footerInk: 'rgb(170,170,170)',
-  nameShadow: '0 0.9px 0 rgba(255,255,255,0.9)'
+  nameShadow: '0 0.9px 0 rgba(255,255,255,0.9)',
+  deleteButton:
+    'linear-gradient(to bottom, rgb(239,135,142) 0%, rgb(199,52,63) 48%, rgb(189,20,33) 49%, rgb(189,20,33) 100%)',
+  deleteButtonStroke: 'rgb(140,20,30)'
 } as const
 
 export const ContactsAlphabet: readonly string[] = [

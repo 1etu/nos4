@@ -43,6 +43,7 @@ export const ContactsTitleBar = (props: {
   showPlus: boolean
   onBack: () => void
   onAdd: () => void
+  onEdit: () => void
 }) => (
   <div
     class="relative flex shrink-0 items-center"
@@ -72,7 +73,7 @@ export const ContactsTitleBar = (props: {
 
     <Show when={props.showBack}>
       <div class="ml-auto" style={{ 'margin-right': `${ContactsMetrics.editInset}px` }}>
-        <UIBarButton title=" Edit " tone="blueGray" onClick={() => undefined} />
+        <UIBarButton title=" Edit " tone="blueGray" onClick={props.onEdit} />
       </div>
     </Show>
 

@@ -1,12 +1,17 @@
 import { Show, createSignal, onCleanup } from 'solid-js'
 import { CAMediaTimingFunction, caAfter, caAnimation, caTransition, type CATransaction } from 'CoreAnimation'
 import { UIStatusBar } from 'UIKit'
-import { AddContactView } from '../Add/AddContactView'
 import { ContactsTitleBar } from '../Chrome/ContactsTitleBar'
 import { ContactsDetail } from '../Detail/ContactsDetail'
+import { ContactEditorView } from '../Edit/ContactEditorView'
 import { ContactsList } from '../List/ContactsList'
 import { ContactsMetrics, ContactsPalette } from '../Support/ContactsMetrics'
+import { addressBookRemove, addressBookUpdate } from '../Support/ContactsStore'
 import { ContactsScreen, type ContactRecord } from '../Support/ContactsTypes'
+
+interface EditorSession {
+  readonly contact: ContactRecord | undefined
+}
 
 const slide = caAnimation(ContactsMetrics.navDuration, CAMediaTimingFunction.linear)
 const sheet = caAnimation(ContactsMetrics.sheetDuration, CAMediaTimingFunction.linear)
@@ -19,15 +24,29 @@ export const ContactsApp = (props: { width: number; height: number }) => {
   const [selected, setSelected] = createSignal<ContactRecord | undefined>()
   const [search, setSearch] = createSignal('')
   const [editing, setEditing] = createSignal(false)
-  const [adding, setAdding] = createSignal(false)
+  const [editor, setEditor] = createSignal<EditorSession | undefined>()
+  const [sheetUp, setSheetUp] = createSignal(false)
 
   let handoff: CATransaction | undefined
   let settle: CATransaction | undefined
+  let dismissal: CATransaction | undefined
 
   onCleanup(() => {
     handoff?.cancel()
     settle?.cancel()
+    dismissal?.cancel()
   })
+
+  const presentEditor = (contact: ContactRecord | undefined) => {
+    dismissal?.cancel()
+    setEditor({ contact })
+    requestAnimationFrame(() => setSheetUp(true))
+  }
+
+  const dismissEditor = () => {
+    setSheetUp(false)
+    dismissal = caAfter(ContactsMetrics.sheetDuration, () => setEditor(undefined))
+  }
 
   const transition = (next: string, isBack: boolean) => {
     handoff?.cancel()
@@ -92,7 +111,8 @@ export const ContactsApp = (props: { width: number; height: number }) => {
         showBack={isDetail()}
         showPlus={!isDetail()}
         onBack={() => transition(ContactsScreen.list, true)}
-        onAdd={() => setAdding(true)}
+        onAdd={() => presentEditor(undefined)}
+        onEdit={() => presentEditor(selected())}
       />
 
       <div class="relative flex-1 overflow-hidden">
@@ -120,16 +140,36 @@ export const ContactsApp = (props: { width: number; height: number }) => {
         </div>
       </div>
 
-      <div
-        class="absolute inset-0"
-        style={{
-          transform: adding() ? 'translateY(0)' : `translateY(${props.height}px)`,
-          transition: caTransition(['transform'], sheet),
-          'pointer-events': adding() ? 'auto' : 'none'
-        }}
-      >
-        <AddContactView onDismiss={() => setAdding(false)} />
-      </div>
+      <Show when={editor()}>
+        {(session) => (
+          <div
+            class="absolute inset-0"
+            style={{
+              transform: sheetUp() ? 'translateY(0)' : `translateY(${props.height}px)`,
+              transition: caTransition(['transform'], sheet),
+              'pointer-events': sheetUp() ? 'auto' : 'none'
+            }}
+          >
+            <ContactEditorView
+              contact={session().contact}
+              onCancel={dismissEditor}
+              onSave={(contact) => {
+                addressBookUpdate(contact)
+                if (selected()?.id === contact.id) setSelected(contact)
+                dismissEditor()
+              }}
+              onDelete={(contact) => {
+                addressBookRemove(contact.id)
+                dismissEditor()
+                if (selected()?.id === contact.id) {
+                  setSelected(undefined)
+                  transition(ContactsScreen.list, true)
+                }
+              }}
+            />
+          </div>
+        )}
+      </Show>
     </div>
   )
 }

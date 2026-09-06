@@ -7,12 +7,6 @@ export const CELRecorderMetrics = {
   stopTimeout: 1500,
   fftSize: 2048,
   sampleRate: 44100,
-  channelCount: 1
+  channelCount: 1,
+  captureBlock: 4096
 } as const
-
-export const CELRecorderFormats = [
-  'audio/mp4;codecs=mp4a.40.2',
-  'audio/mp4',
-  'audio/webm;codecs=opus',
-  'audio/webm'
-] as const

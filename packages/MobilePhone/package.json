@@ -10,6 +10,7 @@
     "@nos4/coreanimation": "workspace:*",
     "@nos4/coregraphics": "workspace:*",
     "@nos4/coretelephony": "workspace:*",
+    "@nos4/mobileaddressbook": "workspace:*",
     "@nos4/nsuserdefaults": "workspace:*",
     "@nos4/textinput": "workspace:*",
     "@nos4/uikit": "workspace:*",

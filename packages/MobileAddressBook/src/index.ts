@@ -12,6 +12,9 @@ export {
   addressBookSections,
   addressBookSearch,
   addressBookAdd,
+  addressBookUpdate,
+  addressBookRemove,
+  addressBookContact,
   contactDisplayName,
   contactIndexLetter
 } from './Support/ContactsStore'

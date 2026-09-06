@@ -55,9 +55,11 @@ export const DeviceFullscreen = (props: { children: JSX.Element }) => {
           <div class='pointer-events-none absolute inset-0' style={{ background: 'black', opacity: uiScreenDimLevel() }} />
         </div>
       </div>
-      <button type='button' aria-label='Home. Double tap for recent apps.' class='device-fullscreen-home' onClick={home}>
-        <span aria-hidden='true' />
-      </button>
+      <div class='device-fullscreen-bar'>
+        <button type='button' aria-label='Home. Double tap for recent apps.' class='device-fullscreen-home' onClick={home}>
+          <span aria-hidden='true' />
+        </button>
+      </div>
     </div>
   )
 }

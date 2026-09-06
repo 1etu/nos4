@@ -35,14 +35,16 @@ export const celRefreshMicrophoneStatus = async (): Promise<CELAuthorizationStat
   return status()
 }
 
-export const celRequestMicrophoneAccess = async (): Promise<MediaStream | undefined> => {
+export const celRequestMicrophoneAccess = async (
+  constraints: MediaTrackConstraints = {}
+): Promise<MediaStream | undefined> => {
   const devices = navigator.mediaDevices
   if (!devices) {
     publish(CELAuthorizationStatus.restricted)
     return undefined
   }
   try {
-    const stream = await devices.getUserMedia({ audio: true })
+    const stream = await devices.getUserMedia({ audio: constraints })
     publish(CELAuthorizationStatus.authorized)
     return stream
   } catch (error) {

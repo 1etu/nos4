@@ -18,4 +18,5 @@ export interface ContactRecord {
   readonly company: string
   readonly phoneNumbers: readonly ContactLabelledValue[]
   readonly emailAddresses: readonly ContactLabelledValue[]
+  readonly urlAddresses?: readonly ContactLabelledValue[]
 }

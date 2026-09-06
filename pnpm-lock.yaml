@@ -366,12 +366,12 @@ importers:
 
   packages/MobileCamera:
     dependencies:
-      '@nos4/camerakit':
-        specifier: workspace:*
-        version: link:../CameraKit
       '@nos4/avfoundation':
         specifier: workspace:*
         version: link:../AVFoundation
+      '@nos4/camerakit':
+        specifier: workspace:*
+        version: link:../CameraKit
       '@nos4/coreanimation':
         specifier: workspace:*
         version: link:../CoreAnimation
@@ -495,6 +495,9 @@ importers:
       '@nos4/coretelephony':
         specifier: workspace:*
         version: link:../CoreTelephony
+      '@nos4/mobileaddressbook':
+        specifier: workspace:*
+        version: link:../MobileAddressBook
       '@nos4/nsuserdefaults':
         specifier: workspace:*
         version: link:../NSUserDefaults
@@ -890,6 +893,8 @@ importers:
         version: 4.127.1
 
   tools/AssetGen: {}
+
+  tools/BannerGen: {}
 
   tools/BlocklistGen: {}
 

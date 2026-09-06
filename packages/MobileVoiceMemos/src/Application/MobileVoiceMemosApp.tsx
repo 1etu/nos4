@@ -49,7 +49,7 @@ export const MobileVoiceMemosApp = (props: { width: number; height: number }) =>
 
   const transport = () => {
     if (recorder.state() === CELRecorderState.stopped) {
-      recorder.startRecording()
+      void recorder.startRecording()
       return
     }
     if (recorder.state() === CELRecorderState.paused) {
@@ -137,7 +137,7 @@ export const MobileVoiceMemosApp = (props: { width: number; height: number }) =>
             selectedId={selected()?.id}
             playing={player.state() === AVPlaybackState.playing}
             currentTime={player.currentTime()}
-            duration={player.duration()}
+            duration={player.duration() > 0 ? player.duration() : (selected()?.duration ?? 0)}
             speaker={speaker()}
             onSelect={select}
             onTogglePlay={() => {

@@ -16,11 +16,15 @@
   overflow: hidden;
 }
 
+.device-fullscreen-bar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  height: 68px;
+  background: black;
+}
+
 .device-fullscreen-home {
-  position: absolute;
-  right: calc(env(safe-area-inset-right) + 12px);
-  bottom: calc(env(safe-area-inset-bottom) + 16px);
-  z-index: 1000;
   display: grid;
   place-items: center;
   width: 52px;

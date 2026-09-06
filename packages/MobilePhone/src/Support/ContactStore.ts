@@ -1,5 +1,10 @@
-import { createSignal } from 'solid-js'
-import { NSUserDefaults } from 'NSUserDefaults'
+import {
+  addressBookAdd,
+  addressBookContacts,
+  addressBookUpdate,
+  type ContactLabelledValue,
+  type ContactRecord
+} from 'MobileAddressBook'
 
 export interface CNLabeledValue {
   readonly label: string
@@ -16,74 +21,34 @@ export interface CNContact {
   readonly urlAddresses: readonly CNLabeledValue[]
 }
 
-const StorageKey = 'contacts'
+const labeled = (entries: readonly ContactLabelledValue[] | undefined): CNLabeledValue[] =>
+  (entries ?? []).map(({ label, value }) => ({ label, value }))
 
-const Seed: readonly CNContact[] = [
-  {
-    identifier: 'angela-adams',
-    givenName: 'Angela',
-    familyName: 'Adams',
-    organizationName: '',
-    phoneNumbers: [{ label: 'mobile', value: '(415) 555-0164' }],
-    emailAddresses: [{ label: 'home', value: 'angela@example.com' }],
-    urlAddresses: []
-  },
-  {
-    identifier: 'dan-chase',
-    givenName: 'Dan',
-    familyName: 'Chase',
-    organizationName: '',
-    phoneNumbers: [
-      { label: 'mobile', value: '(408) 555-0142' },
-      { label: 'home', value: '(408) 555-0187' }
-    ],
-    emailAddresses: [{ label: 'home', value: 'dan@example.com' }],
-    urlAddresses: [{ label: 'home page', value: 'example.com' }]
-  },
-  {
-    identifier: 'nina-ortiz',
-    givenName: 'Nina',
-    familyName: 'Ortiz',
-    organizationName: '',
-    phoneNumbers: [{ label: 'iPhone', value: '(212) 555-0119' }],
-    emailAddresses: [],
-    urlAddresses: []
-  },
-  {
-    identifier: 'marcus-reed',
-    givenName: 'Marcus',
-    familyName: 'Reed',
-    organizationName: '',
-    phoneNumbers: [
-      { label: 'work', value: '(650) 555-0173' },
-      { label: 'mobile', value: '(650) 555-0198' }
-    ],
-    emailAddresses: [{ label: 'work', value: 'marcus@example.com' }],
-    urlAddresses: []
-  },
-  {
-    identifier: 'terry-white',
-    givenName: 'Terry',
-    familyName: 'White',
-    organizationName: '',
-    phoneNumbers: [{ label: 'mobile', value: '(303) 555-0155' }],
-    emailAddresses: [],
-    urlAddresses: []
-  },
-  {
-    identifier: 'support-line',
-    givenName: 'Support',
-    familyName: '',
-    organizationName: 'Support',
-    phoneNumbers: [{ label: 'main', value: '1 (800) 555-0199' }],
-    emailAddresses: [],
-    urlAddresses: []
-  }
-]
+const identified = (
+  prefix: string,
+  entries: readonly CNLabeledValue[]
+): ContactLabelledValue[] =>
+  entries.map(({ label, value }, index) => ({ id: `${prefix}${index}`, label, value }))
 
-const [store, setStore] = createSignal<CNContact[]>(
-  NSUserDefaults.object<CNContact[]>(StorageKey) ?? Seed.map((entry) => ({ ...entry }))
-)
+const fromRecord = (record: ContactRecord): CNContact => ({
+  identifier: record.id,
+  givenName: record.givenName,
+  familyName: record.familyName,
+  organizationName: record.company,
+  phoneNumbers: labeled(record.phoneNumbers),
+  emailAddresses: labeled(record.emailAddresses),
+  urlAddresses: labeled(record.urlAddresses)
+})
+
+const toRecord = (contact: CNContact): ContactRecord => ({
+  id: contact.identifier,
+  givenName: contact.givenName,
+  familyName: contact.familyName,
+  company: contact.organizationName,
+  phoneNumbers: identified(`${contact.identifier}-p`, contact.phoneNumbers),
+  emailAddresses: identified(`${contact.identifier}-e`, contact.emailAddresses),
+  urlAddresses: identified(`${contact.identifier}-u`, contact.urlAddresses)
+})
 
 export const cnContactName = (contact: CNContact): string =>
   [contact.givenName, contact.familyName].filter((part) => part !== '').join(' ')
@@ -91,15 +56,12 @@ export const cnContactName = (contact: CNContact): string =>
 const sortKey = (contact: CNContact): string =>
   `${contact.familyName !== '' ? contact.familyName : contact.givenName} ${contact.givenName}`
 
-export const cnContacts = () =>
-  [...store()].sort((left, right) => sortKey(left).localeCompare(sortKey(right)))
+export const cnContacts = (): CNContact[] =>
+  addressBookContacts()
+    .map(fromRecord)
+    .sort((left, right) => sortKey(left).localeCompare(sortKey(right)))
 
-const persist = (next: CNContact[]): void => {
-  setStore(next)
-  NSUserDefaults.setObject(StorageKey, next)
-}
-
-export const cnAddContact = (contact: CNContact): void => persist([...store(), contact])
+export const cnAddContact = (contact: CNContact): void => addressBookAdd(toRecord(contact))
 
 export const cnUpdateContact = (contact: CNContact): void =>
-  persist(store().map((entry) => (entry.identifier === contact.identifier ? contact : entry)))
+  addressBookUpdate(toRecord(contact))
