@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Large media and framework assets add nothing to search results.
+Disallow: /wallpapers/
+Disallow: /doom/
+Disallow: /scene/
+Disallow: /sounds/
+Disallow: /fonts/
+
+Sitemap: https://nos4.fun/sitemap.xml

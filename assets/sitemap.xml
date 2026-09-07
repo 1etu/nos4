@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+>
+  <url>
+    <loc>https://nos4.fun/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://nos4.fun/brand/nos4-og-1200.jpg</image:loc>
+      <image:title>nOS4 — iOS 4 running in a web browser</image:title>
+    </image:image>
+  </url>
+</urlset>

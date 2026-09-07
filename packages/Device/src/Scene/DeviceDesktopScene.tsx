@@ -134,7 +134,13 @@ export const DeviceDesktopScene = (props: { children: JSX.Element }) => {
 
   return (
     <div
-      style={{ position: 'fixed', inset: '0', overflow: 'hidden', isolation: 'isolate' }}
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100vh',
+        overflow: 'hidden',
+        isolation: 'isolate'
+      }}
     >
       <Show when={!uiScreenIsCompact()}>
         <DeviceSceneToggle

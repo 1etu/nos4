@@ -4,36 +4,236 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="nOS4" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <title>nOS4 - Everything you remember</title>
-    <link rel="icon" type="image/png" href="./brand/nos4-icon.png" />
-    <link rel="apple-touch-icon" href="./brand/nos4-icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <title>nOS4 — iOS 4 Emulator in Your Browser</title>
     <meta
       name="description"
-      content="nOS4 brings the phone you remember back to your browser."
+      content="Relive iOS 4 in your browser. nOS4 is a free, open-source iPhone simulator with 24 working apps — Safari, Maps, Camera, Notes, Doom and more. Nothing to install."
     />
+    <link rel="canonical" href="https://nos4.fun/" />
+    <meta name="author" content="ege türker" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
     <meta name="theme-color" content="#000000" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="application-name" content="nOS4" />
+
+    <link rel="icon" type="image/png" sizes="32x32" href="./brand/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./brand/favicon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./brand/apple-touch-icon.png" />
+    <link rel="manifest" href="./site.webmanifest" />
+
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="nOS4" />
-    <meta property="og:title" content="Introducing nOS4" />
+    <meta property="og:url" content="https://nos4.fun/" />
+    <meta property="og:title" content="nOS4 — iOS 4 Emulator in Your Browser" />
     <meta
       property="og:description"
-      content="Everything you remember. Right in your browser."
+      content="A faithful recreation of iOS 4, running in any modern browser. 24 working apps, no download, fully open source."
     />
-    <meta property="og:image" content="https://nos4.fun/brand/nos4-og.png" />
-    <meta property="og:image:width" content="1731" />
-    <meta property="og:image:height" content="909" />
-    <meta property="og:image:alt" content="Introducing nOS4" />
+    <meta property="og:image" content="https://nos4.fun/brand/nos4-og-1200.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="nOS4 — iOS 4 running in a web browser" />
     <meta property="og:locale" content="en_US" />
+
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Introducing nOS4" />
+    <meta name="twitter:title" content="nOS4 — iOS 4 Emulator in Your Browser" />
     <meta
       name="twitter:description"
-      content="Everything you remember. Right in your browser."
+      content="A faithful recreation of iOS 4, running in any modern browser. 24 working apps, no download, fully open source."
     />
-    <meta name="twitter:image" content="./brand/nos4-og.png" />
-    <meta name="twitter:image:alt" content="Introducing nOS4" />
+    <meta name="twitter:image" content="https://nos4.fun/brand/nos4-og-1200.jpg" />
+    <meta name="twitter:image:alt" content="nOS4 — iOS 4 running in a web browser" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://nos4.fun/#website",
+            "url": "https://nos4.fun/",
+            "name": "nOS4",
+            "description": "A faithful recreation of iOS 4 that runs in a web browser.",
+            "inLanguage": "en"
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://nos4.fun/#app",
+            "name": "nOS4",
+            "alternateName": ["nOS4 iOS 4 Emulator", "iOS 4 Web Simulator"],
+            "url": "https://nos4.fun/",
+            "description": "nOS4 is a free, open-source recreation of Apple's iOS 4 that runs entirely in a web browser. It includes 24 working apps such as Safari, Mail, Maps, Camera, Notes, Voice Memos and Doom, plus the original lock screen, home screen folders and multitasking tray.",
+            "applicationCategory": "https://schema.org/EntertainmentApplication",
+            "applicationSubCategory": "Operating system simulator",
+            "operatingSystem": "Any modern web browser",
+            "browserRequirements": "Requires JavaScript and a browser released after 2021",
+            "image": "https://nos4.fun/brand/nos4-og-1200.jpg",
+            "screenshot": "https://nos4.fun/brand/nos4-og-1200.jpg",
+            "softwareVersion": "4",
+            "isAccessibleForFree": true,
+            "license": "https://github.com/1etu/nos4/blob/main/LICENSE",
+            "codeRepository": "https://github.com/1etu/nos4",
+            "author": { "@type": "Person", "name": "ege türker" },
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD",
+              "availability": "https://schema.org/InStock"
+            },
+            "featureList": [
+              "Lock screen with slide to unlock",
+              "Home screen with folders and multitasking",
+              "Safari that browses the 2011 web",
+              "Camera with an iPhone 5s photo pipeline",
+              "Maps, Weather, Stocks and Notes",
+              "Doom and Flatty Bird"
+            ]
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://nos4.fun/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What is nOS4?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "nOS4 is a recreation of Apple's iOS 4 that runs in a web browser. It rebuilds the iPhone lock screen, home screen and 24 apps in TypeScript, so you can use iOS 4 without owning an old iPhone."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is this a real iOS 4 emulator?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "It is a simulator rather than an emulator. nOS4 does not run Apple's original ARM code or firmware. Every screen and app is rebuilt from scratch in web technology to look and behave like iOS 4."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do I need to install or download anything?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. nOS4 runs entirely in the browser. Open nos4.fun on a phone or computer and it starts at the lock screen. You can also add it to your home screen to run it fullscreen."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Which apps work in nOS4?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Twenty-four apps work, including Safari, Mail, Messages, Phone, Maps, iPod, Photos, Camera, Notes, Weather, Stocks, Clock, Calculator, Compass, Voice Memos, Contacts, Settings, App Store, iTunes, Game Center, Doom and Flatty Bird."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is nOS4 free and open source?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. nOS4 is free to use and the full source code is published on GitHub at github.com/1etu/nos4."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does the Safari app really load websites?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Safari in nOS4 loads pages through the Internet Archive, so sites appear as they looked in 2011. You can turn that off in Settings to browse the live web instead."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
     <style>
+.nos4-about {
+        position: relative;
+        z-index: 1;
+        box-sizing: border-box;
+        margin: 0 auto;
+        padding: 64px 24px 88px;
+        max-width: 760px;
+        color: rgb(28, 28, 30);
+        font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+      }
+
+      .nos4-about h1 {
+        margin: 0 0 4px;
+        font-size: 30px;
+        line-height: 1.25;
+        letter-spacing: -0.02em;
+      }
+
+      .nos4-about h2 {
+        margin: 40px 0 10px;
+        font-size: 21px;
+        letter-spacing: -0.01em;
+      }
+
+      .nos4-about h3 {
+        margin: 22px 0 4px;
+        font-size: 16px;
+      }
+
+      .nos4-about p {
+        margin: 0 0 14px;
+        color: rgb(58, 58, 62);
+      }
+
+      .nos4-about ul {
+        margin: 0 0 14px;
+        padding-left: 20px;
+        color: rgb(58, 58, 62);
+      }
+
+      .nos4-about li {
+        margin-bottom: 6px;
+      }
+
+      .nos4-about a {
+        color: rgb(0, 112, 201);
+      }
+
+      .nos4-about .nos4-tagline {
+        margin-bottom: 22px;
+        color: rgb(110, 110, 115);
+        font-size: 17px;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        html {
+        background: #ffffff;
+      }
+
+      /* The app owns the first screen. The landing copy starts below it, so it
+         never flashes while the bundle is still loading. */
+      #root {
+        min-height: 100vh;
+      }
+
+      .nos4-about {
+          color: rgb(240, 240, 245);
+        }
+        .nos4-about p,
+        .nos4-about ul {
+          color: rgb(190, 190, 198);
+        }
+        .nos4-about .nos4-tagline {
+          color: rgb(150, 150, 158);
+        }
+        .nos4-about a {
+          color: rgb(94, 175, 255);
+        }
+      }
+
       .nos4-cta {
         --nos4-chip-face: linear-gradient(
           to bottom,
@@ -279,6 +479,96 @@
         </svg>
       </a>
     </div>
+
+
+    <main class="nos4-about">
+      <h1>nOS4 — iOS 4 in your browser</h1>
+      <p class="nos4-tagline">
+        A faithful recreation of Apple's iOS 4, rebuilt for the web. No download, no
+        jailbreak, no old iPhone required.
+      </p>
+
+      <p>
+        <strong>nOS4</strong> puts iOS 4 back on your screen. It boots to the familiar
+        slide-to-unlock lock screen, drops you on a linen home screen with folders and the
+        multitasking tray, and lets you open twenty-four working apps — the same
+        skeuomorphic interface Apple shipped on the iPhone 4 in 2010.
+      </p>
+      <p>
+        It runs on any modern browser, on a phone or a desktop. On a phone it fills the
+        screen like the real thing. On a computer it appears inside an iPhone you can
+        actually plug in.
+      </p>
+
+      <h2>What you can do in nOS4</h2>
+      <ul>
+        <li>
+          <strong>Browse the 2011 web.</strong> Safari loads pages through the Internet
+          Archive, so apple.com and YouTube appear exactly as they did in 2011.
+        </li>
+        <li>
+          <strong>Take photos.</strong> The Camera uses your webcam and runs frames through
+          an iPhone 5s photo pipeline, then writes matching EXIF data.
+        </li>
+        <li>
+          <strong>Record voice memos.</strong> Real microphone capture, saved as WAV and
+          playable from the recordings list.
+        </li>
+        <li>
+          <strong>Find north.</strong> The Compass reads your device's magnetometer through
+          a rebuilt CoreLocation framework.
+        </li>
+        <li>
+          <strong>Play Doom.</strong> The original shareware WAD runs in landscape, next to
+          a Flatty Bird clone and Game Center leaderboards.
+        </li>
+        <li>
+          <strong>Use the rest of the phone.</strong> Mail, Messages, Maps, iPod, Photos,
+          Notes, Weather, Stocks, Clock, Calculator, Contacts, Settings, App Store and
+          iTunes all work.
+        </li>
+      </ul>
+
+      <h2>How it is built</h2>
+      <p>
+        nOS4 is not an emulator. It does not run Apple's ARM firmware. Every pixel is
+        rebuilt from scratch in TypeScript and SolidJS, on top of sixteen frameworks named
+        after their Apple counterparts — Foundation, CoreGraphics, CoreAnimation, UIKit,
+        SpringBoard, CoreLocation and the rest. Nothing imports upward, so the stack reads
+        the way the real one did.
+      </p>
+
+      <h2>Questions</h2>
+
+      <h3>Is this a real iOS 4 emulator?</h3>
+      <p>
+        It is a simulator rather than an emulator. nOS4 does not run Apple's original code
+        or firmware. Every screen is rebuilt in web technology to look and behave like
+        iOS 4.
+      </p>
+
+      <h3>Do I need to install anything?</h3>
+      <p>
+        No. nOS4 runs entirely in the browser. You can add it to your home screen to launch
+        it fullscreen like an app.
+      </p>
+
+      <h3>Is it free and open source?</h3>
+      <p>
+        Yes. nOS4 is free, and the source is on
+        <a href="https://github.com/1etu/nos4" rel="noopener">GitHub</a>.
+      </p>
+
+      <h3>Does it work on iPhone and Android?</h3>
+      <p>
+        Yes. Any modern mobile browser works, and the layout fills the screen on a phone.
+      </p>
+
+      <p>
+        Built by ege türker. Source on
+        <a href="https://github.com/1etu/nos4" rel="noopener">GitHub</a>.
+      </p>
+    </main>
 
     <script type="module" src="/src/main.tsx"></script>
   </body>
