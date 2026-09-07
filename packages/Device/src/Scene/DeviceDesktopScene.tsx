@@ -1,7 +1,8 @@
-import { createEffect, createSignal, on, onCleanup, onMount, Show, type JSX } from 'solid-js'
+import { createEffect, createSignal, lazy, on, onCleanup, onMount, Show, type JSX } from 'solid-js'
 import { NSNotificationCenter } from 'Foundation'
 import { CAMediaTimingFunction, caAfter, caAnimation, caTransition, type CATransaction } from 'CoreAnimation'
-import { SCNView } from 'SceneKit'
+
+const SCNView = lazy(async () => ({ default: (await import('SceneKit')).SCNView }))
 import {
   uiDeviceIsPluggedIn,
   uiDeviceSetPluggedIn,
@@ -60,8 +61,9 @@ export const DeviceDesktopScene = (props: { children: JSX.Element }) => {
   const [left, setLeft] = createSignal(0)
   const [top, setTop] = createSignal(0)
   const [plugged, setPlugged] = createSignal(uiDeviceIsPluggedIn())
-  const [mounted, setMounted] = createSignal(!uiScreenSceneStaged())
-  const [opaque, setOpaque] = createSignal(!uiScreenSceneStaged())
+  const staged = () => !DeviceSceneMetrics.richSceneEnabled || uiScreenSceneStaged()
+  const [mounted, setMounted] = createSignal(!staged())
+  const [opaque, setOpaque] = createSignal(!staged())
   const [orientation, setOrientation] = createSignal<DeviceOrientationValue>(
     DeviceOrientation.portrait
   )
@@ -88,7 +90,7 @@ export const DeviceDesktopScene = (props: { children: JSX.Element }) => {
         : (window.innerHeight * DeviceSceneMetrics.phoneViewportFraction) / PhoneHeight
     setScale(next)
     setLeft(window.innerWidth / 2 - GripCentreX)
-    if (uiScreenSceneStaged() || landscape()) {
+    if (staged() || landscape()) {
       setTop(window.innerHeight / 2 - GripCentreY)
       return
     }
@@ -116,7 +118,7 @@ export const DeviceDesktopScene = (props: { children: JSX.Element }) => {
 
   createEffect(
     on(
-      uiScreenSceneStaged,
+      staged,
       (away) => {
         settle?.cancel()
         fit()
@@ -134,15 +136,9 @@ export const DeviceDesktopScene = (props: { children: JSX.Element }) => {
 
   return (
     <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '100vh',
-        overflow: 'hidden',
-        isolation: 'isolate'
-      }}
+      style={{ position: 'fixed', inset: '0', overflow: 'hidden', isolation: 'isolate' }}
     >
-      <Show when={!uiScreenIsCompact()}>
+      <Show when={DeviceSceneMetrics.richSceneEnabled && !uiScreenIsCompact()}>
         <DeviceSceneToggle
           enabled={!uiScreenSceneHidden()}
           onChange={(enabled) => uiScreenSetSceneHidden(!enabled)}

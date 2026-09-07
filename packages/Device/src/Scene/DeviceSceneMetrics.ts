@@ -1,4 +1,5 @@
 export const DeviceSceneMetrics = {
+  richSceneEnabled: false,
   armWidth: 1024,
   armHeight: 1536,
   gripLeft: 257,
