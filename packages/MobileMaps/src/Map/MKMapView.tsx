@@ -3,6 +3,7 @@ import type { CLLocation, CLLocationCoordinate2D } from 'CoreLocation'
 import { MapsMetrics, MapsPalette } from '../Support/MapsMetrics'
 import type { MapsAnnotation, MapsRoute, MapsTypeValue } from '../Support/MapsTypes'
 import { MKAnnotationPin } from './MKAnnotationPin'
+import { MapsPinTone } from '../Support/MapsTypes'
 import { MKUserLocationDot } from './MKUserLocationDot'
 import { mkProject, mkUnproject, type MKPoint } from './MKProjection'
 import { mkPlaceTile, mkTileLevel, mkTileScale, mkVisibleTiles, type MKTile } from './MKTileLayout'
@@ -281,6 +282,7 @@ export const MKMapView = (props: {
             annotation={annotation}
             at={screenFor(annotation.coordinate)}
             selected={props.selected === annotation.id}
+            dropped={annotation.tone === MapsPinTone.dropped}
             onSelect={() => props.onSelect(annotation.id)}
           />
         )}

@@ -1,5 +1,6 @@
 import { Match, Show, Switch, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
 import { NSNotificationCenter } from 'Foundation'
+import type { CLPlacemark } from 'CoreLocation'
 import {
   clLocation,
   clRequestWhenInUseAuthorization,
@@ -14,6 +15,8 @@ import { MapsToolBar } from '../Chrome/MapsToolBar'
 import { MapsDirectionsBar } from '../Directions/MapsDirectionsBar'
 import { MapsDirectionsFooter } from '../Directions/MapsDirectionsFooter'
 import { MapsDirectionsModeBar } from '../Directions/MapsDirectionsModeBar'
+import { MapsNavigationBar } from '../Directions/MapsNavigationBar'
+import { MapsSuggestionList } from '../Chrome/MapsSuggestionList'
 import { MKCurlView } from '../Map/MKCurlView'
 import { mkRasteriseMap } from '../Map/MKMapRaster'
 import { MKMapView, type MKMapRegion } from '../Map/MKMapView'
@@ -26,7 +29,11 @@ import {
   MKMapViewRegionDidChange,
   MapsIdentifier
 } from '../Support/MapsNotifications'
-import { mapsCalculateRoute, mapsSearchPlacemarks } from '../Support/MapsService'
+import {
+  mapsCalculateRoute,
+  mapsSearchPlacemarks,
+  mapsSuggestPlaces
+} from '../Support/MapsService'
 import {
   MapsEditingState,
   MapsPinTone,
@@ -36,6 +43,7 @@ import {
   type MapsAnnotation,
   type MapsEditingStateValue,
   type MapsRoute,
+  type MapsRouteStep,
   type MapsSegmentValue,
   type MapsTransportValue,
   type MapsTypeValue
@@ -59,16 +67,29 @@ export const MapsApp = (props: { width: number; height: number }) => {
   const [tracking, setTracking] = createSignal(false)
   const [selected, setSelected] = createSignal<string | undefined>()
   const [routed, setRouted] = createSignal(false)
+  const [navigating, setNavigating] = createSignal(false)
+  const [stepIndex, setStepIndex] = createSignal(0)
+  const [suggestions, setSuggestions] = createSignal<readonly CLPlacemark[]>([])
+  const [searching, setSearching] = createSignal(false)
   const [region, setRegion] = createSignal<MKMapRegion>({
     centre: FallbackCentre,
     zoom: MapsMetrics.defaultZoom
   })
 
   let reveal: ReturnType<typeof setTimeout> | undefined
+  let lookup: ReturnType<typeof setTimeout> | undefined
+  let lookupToken = 0
 
   const clearReveal = () => {
     clearTimeout(reveal)
     reveal = undefined
+  }
+
+  const clearLookup = () => {
+    lookupToken += 1
+    clearTimeout(lookup)
+    lookup = undefined
+    setSearching(false)
   }
 
   onMount(() => {
@@ -79,6 +100,7 @@ export const MapsApp = (props: { width: number; height: number }) => {
   onCleanup(() => {
     clStopUpdatingLocation()
     clearReveal()
+    clearLookup()
   })
 
   const here = (): CLLocationCoordinate2D => clLocation()?.coordinate ?? region().centre
@@ -98,6 +120,60 @@ export const MapsApp = (props: { width: number; height: number }) => {
   const moveTo = (centre: CLLocationCoordinate2D, zoom: number) => {
     setRegion({ centre, zoom })
     NSNotificationCenter.post(MKMapViewRegionDidChange, MapsIdentifier, { centre, zoom })
+  }
+
+  const suggest = (query: string) => {
+    clearTimeout(lookup)
+    const trimmed = query.trim()
+    if (trimmed.length < MapsMetrics.suggestionMinimumLength) {
+      lookupToken += 1
+      setSuggestions([])
+      setSearching(false)
+      return
+    }
+    setSearching(true)
+    lookup = setTimeout(() => {
+      lookup = undefined
+      lookupToken += 1
+      const token = lookupToken
+      void mapsSuggestPlaces(trimmed, here()).then((places) => {
+        if (token !== lookupToken) return
+        setSuggestions(places)
+        setSearching(false)
+      })
+    }, MapsMetrics.suggestionDebounceMilliseconds)
+  }
+
+  const showPlace = (place: CLPlacemark) => {
+    const pin: MapsAnnotation = {
+      id: 'search-0',
+      title: place.name,
+      subtitle: place.locality,
+      coordinate: place.coordinate,
+      tone: MapsPinTone.destination
+    }
+    setSearchPins([pin])
+    setSelected(undefined)
+    setTracking(false)
+    moveTo(place.coordinate, MapsMetrics.defaultZoom)
+    clearReveal()
+    reveal = setTimeout(() => {
+      reveal = undefined
+      setSelected(pin.id)
+    }, MapsMetrics.calloutRevealMilliseconds)
+  }
+
+  const chooseSuggestion = (place: CLPlacemark) => {
+    clearLookup()
+    setSuggestions([])
+    setEditing(MapsEditingState.none)
+    if (segment() === MapsSegment.directions) {
+      setDestinationText(place.name)
+      void runDirections(transport(), place)
+      return
+    }
+    setSearchText(place.name)
+    showPlace(place)
   }
 
   const runSearch = async () => {
@@ -128,12 +204,11 @@ export const MapsApp = (props: { width: number; height: number }) => {
     }, MapsMetrics.calloutRevealMilliseconds)
   }
 
-  const runDirections = async (mode: MapsTransportValue) => {
+  const runDirections = async (mode: MapsTransportValue, place?: CLPlacemark) => {
     const query = destinationText().trim()
-    if (query.length === 0) return
+    if (!place && query.length === 0) return
     const origin = here()
-    const places = await mapsSearchPlacemarks(query, origin)
-    const target = places[0]
+    const target = place ?? (await mapsSearchPlacemarks(query, origin))[0]
     if (!target) return
     const found = await mapsCalculateRoute(origin, target.coordinate, mode)
     if (!found) return
@@ -155,6 +230,8 @@ export const MapsApp = (props: { width: number; height: number }) => {
       }
     ])
     setRouted(true)
+    setNavigating(false)
+    setStepIndex(0)
     setSelected(undefined)
     setTracking(false)
     const bounds = mkZoomForBounds(found.path, props.width, mapHeight())
@@ -163,6 +240,35 @@ export const MapsApp = (props: { width: number; height: number }) => {
       transport: mode,
       route: found
     })
+  }
+
+  const steps = (): readonly MapsRouteStep[] => route()?.steps ?? []
+
+  const goToStep = (next: number) => {
+    const list = steps()
+    const clamped = Math.min(Math.max(next, 0), Math.max(list.length - 1, 0))
+    setStepIndex(clamped)
+    const step = list[clamped]
+    if (step) moveTo(step.coordinate, MapsMetrics.navStepZoom)
+  }
+
+  const startNavigation = () => {
+    if (steps().length === 0) {
+      setSelected('route-destination')
+      return
+    }
+    setNavigating(true)
+    setSelected(undefined)
+    setTracking(false)
+    goToStep(0)
+  }
+
+  const endNavigation = () => {
+    setNavigating(false)
+    const found = route()
+    if (!found) return
+    const bounds = mkZoomForBounds(found.path, props.width, mapHeight())
+    if (bounds) moveTo(bounds.centre, bounds.zoom)
   }
 
   const onTracking = () => {
@@ -182,7 +288,7 @@ export const MapsApp = (props: { width: number; height: number }) => {
       title: 'Dropped Pin',
       subtitle: '',
       coordinate: centre,
-      tone: MapsPinTone.destination
+      tone: MapsPinTone.dropped
     }
     setSearchPins([...searchPins(), pin])
     setSelected(pin.id)
@@ -192,6 +298,12 @@ export const MapsApp = (props: { width: number; height: number }) => {
     setTransport(mode)
     void runDirections(mode)
   }
+
+  const suggesting = () =>
+    editingActive() && searchTextFor().trim().length >= MapsMetrics.suggestionMinimumLength
+
+  const searchTextFor = () =>
+    segment() === MapsSegment.directions ? destinationText() : searchText()
 
   const toggleCurl = async () => {
     if (curled()) {
@@ -247,19 +359,39 @@ export const MapsApp = (props: { width: number; height: number }) => {
             editing={editing()}
             onInput={(value) => {
               setSearchText(value)
+              suggest(value)
               if (editingActive()) beginEditing(value)
             }}
-            onFocus={() => beginEditing(searchText())}
+            onFocus={() => {
+              beginEditing(searchText())
+              suggest(searchText())
+            }}
             onBlur={() => setEditing(MapsEditingState.none)}
-            onSubmit={() => void runSearch()}
+            onSubmit={() => {
+              clearLookup()
+              void runSearch()
+            }}
+          />
+        </Match>
+        <Match when={routed() && navigating()}>
+          <MapsNavigationBar
+            step={steps()[stepIndex()]}
+            index={stepIndex()}
+            total={steps().length}
+            onPrevious={() => goToStep(stepIndex() - 1)}
+            onNext={() => goToStep(stepIndex() + 1)}
+            onEnd={endNavigation}
           />
         </Match>
         <Match when={routed()}>
           <MapsDirectionsModeBar
             transport={transport()}
             onTransport={changeTransport}
-            onEdit={() => setRouted(false)}
-            onStart={() => setSelected('route-destination')}
+            onEdit={() => {
+              setRouted(false)
+              setNavigating(false)
+            }}
+            onStart={startNavigation}
           />
           <MapsDirectionsFooter
             distance={route()?.distance ?? ''}
@@ -279,15 +411,32 @@ export const MapsApp = (props: { width: number; height: number }) => {
             editing={editing()}
             onDestination={(value) => {
               setDestinationText(value)
+              suggest(value)
               if (editingActive()) beginEditing(value)
             }}
-            onFocus={() => beginEditing(destinationText())}
+            onFocus={() => {
+              beginEditing(destinationText())
+              suggest(destinationText())
+            }}
             onBlur={() => setEditing(MapsEditingState.none)}
-            onSubmit={() => void runDirections(transport())}
+            onSubmit={() => {
+              clearLookup()
+              void runDirections(transport())
+            }}
             onSwap={() => setDestinationText('')}
           />
         </Match>
       </Switch>
+
+      <Show when={suggesting()}>
+        <MapsSuggestionList
+          height={Math.min(mapHeight(), MapsMetrics.suggestionRowHeight * 6)}
+          suggestions={suggestions()}
+          searching={searching()}
+          query={searchTextFor()}
+          onSelect={chooseSuggestion}
+        />
+      </Show>
       </div>
 
       <div class="relative shrink-0" style={{ height: `${mapHeight()}px` }}>

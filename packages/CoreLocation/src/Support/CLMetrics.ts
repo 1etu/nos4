@@ -4,6 +4,7 @@ export const CLLocationMetrics = {
   fixMaximumAgeMilliseconds: 15000,
   geocodeTimeoutMilliseconds: 8000,
   geocodeResultLimit: 12,
+  completionResultLimit: 8,
   distanceFilterMetres: 8,
   degreesPerRadian: 180 / Math.PI,
   fallbackAccuracyMetres: 65,
@@ -15,5 +16,6 @@ export const CLLocationMetrics = {
 
 export const CLLocationEndpoint = {
   forward: 'https://nominatim.openstreetmap.org/search',
-  reverse: 'https://nominatim.openstreetmap.org/reverse'
+  reverse: 'https://nominatim.openstreetmap.org/reverse',
+  complete: 'https://photon.komoot.io/api'
 } as const

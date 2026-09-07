@@ -28,7 +28,7 @@ const MKCallout = (props: { title: string }) => (
   <div
     class="pointer-events-none absolute left-1/2 flex items-center justify-center"
     style={{
-      bottom: `${MapsMetrics.pinHeight - MapsMetrics.pinAnchorY}px`,
+      bottom: `${MapsMetrics.pinHeight - MapsMetrics.pinCalloutOverlap}px`,
       transform: 'translateX(-50%)',
       height: `${MapsMetrics.calloutHeight}px`
     }}
@@ -73,19 +73,30 @@ const MKCallout = (props: { title: string }) => (
   </div>
 )
 
+const toneFilter = (tone: MapsAnnotation['tone']): string => {
+  const shadow = 'drop-shadow(0 1px 1px rgba(0,0,0,0.35))'
+  if (tone === MapsPinTone.dropped) return `hue-rotate(268deg) saturate(1.25) ${shadow}`
+  return shadow
+}
+
 export const MKAnnotationPin = (props: {
   annotation: MapsAnnotation
   at: MKPoint
   selected: boolean
+  dropped: boolean
   onSelect: () => void
 }) => (
   <div
     class="absolute"
     style={{
-      left: `${props.at.x + MapsMetrics.pinAnchorX - MapsMetrics.pinWidth / 2}px`,
-      top: `${props.at.y - MapsMetrics.pinAnchorY - MapsMetrics.pinHeight / 2}px`,
+      left: `${props.at.x - MapsMetrics.pinAnchorX}px`,
+      top: `${props.at.y - MapsMetrics.pinAnchorY}px`,
       width: `${MapsMetrics.pinWidth}px`,
       height: `${MapsMetrics.pinHeight}px`,
+      'transform-origin': `${MapsMetrics.pinAnchorX}px ${MapsMetrics.pinAnchorY}px`,
+      animation: props.dropped
+        ? `mkPinDrop ${MapsMetrics.pinDropMilliseconds}ms cubic-bezier(0.32, 1.4, 0.6, 1) both`
+        : 'none',
       'z-index': props.selected ? '3' : '2'
     }}
   >
@@ -102,7 +113,7 @@ export const MKAnnotationPin = (props: {
     >
       <CGImage
         name={props.annotation.tone === MapsPinTone.origin ? 'PinGreen' : 'Pin'}
-        style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.35))' }}
+        style={{ filter: toneFilter(props.annotation.tone) }}
       />
     </button>
   </div>

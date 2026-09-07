@@ -16,7 +16,8 @@ export type {
   MapsEditingStateValue,
   MapsPinToneValue,
   MapsAnnotation,
-  MapsRoute
+  MapsRoute,
+  MapsRouteStep
 } from './Support/MapsTypes'
 export {
   MapsIdentifier,
@@ -26,6 +27,7 @@ export {
 } from './Support/MapsNotifications'
 export {
   mapsSearchPlacemarks,
+  mapsSuggestPlaces,
   mapsCalculateRoute,
   mapsFormatDistance,
   mapsFormatDuration

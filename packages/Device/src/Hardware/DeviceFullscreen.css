@@ -1,56 +1,56 @@
 .device-fullscreen {
   position: fixed;
-  display: flex;
-  flex-direction: column;
   inset: 0;
   height: 100dvh;
   overflow: hidden;
   background: black;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 .device-fullscreen-content {
-  width: 100%;
-  flex: 1;
-  min-height: 0;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
 }
 
-.device-fullscreen-bar {
-  display: grid;
-  flex: none;
-  place-items: center;
-  height: 68px;
-  background: black;
-}
-
 .device-fullscreen-home {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  z-index: 1000;
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
-  padding: 0;
-  border: 1px solid #ffffff66;
-  border-radius: 50%;
-  background: #171717b3;
-  box-shadow: 0 2px 8px #0006;
+  width: 148px;
+  height: calc(22px + env(safe-area-inset-bottom));
+  padding: 0 0 env(safe-area-inset-bottom);
+  transform: translateX(-50%);
+  border: none;
+  background: transparent;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .device-fullscreen-home span {
-  width: 19px;
-  height: 19px;
-  border: 2px solid white;
-  border-radius: 5px;
+  width: 108px;
+  height: 5px;
+  border-radius: 3px;
+  background: rgb(255 255 255 / 55%);
+  box-shadow: 0 0 3px rgb(0 0 0 / 45%);
+  transition: opacity 0.45s ease-out, background 0.15s ease-out;
 }
 
-.device-fullscreen-home:active {
-  background: #444d;
+.device-fullscreen-home[data-idle='true'] span {
+  opacity: 0.3;
 }
 
-.device-fullscreen-home:focus-visible {
+.device-fullscreen-home:active span {
+  background: rgb(255 255 255 / 90%);
+  opacity: 1;
+}
+
+.device-fullscreen-home:focus-visible span {
   outline: 2px solid white;
-  outline-offset: 3px;
+  outline-offset: 4px;
+  opacity: 1;
 }
 
 @media (max-width: 820px), (hover: none) and (pointer: coarse) {

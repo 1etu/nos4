@@ -1,4 +1,5 @@
 import { DeviceMetrics } from 'Device'
+import { CAMediaTimingFunction, caAnimation } from 'CoreAnimation'
 
 const AuthoredWidth = 390
 const AuthoredHeight = 844
@@ -80,7 +81,7 @@ export const SpringBoardMetrics = {
   editHoldDelay: 0.5,
   editHoldSlop: 10,
   folderOffsetMax: 150,
-  folderDuration: 0.32,
+  folderDuration: 0.36,
   folderStripHeight: 150,
   folderStripGap: 4,
   folderNotchHeight: 18,
@@ -165,3 +166,8 @@ export const SpringBoardMetrics = {
   shimmerFalloff: 20,
   unlockSoundVolume: 0.05
 } as const
+
+export const folderAnimation = caAnimation(
+  SpringBoardMetrics.folderDuration,
+  CAMediaTimingFunction.easeOut
+)

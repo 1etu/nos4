@@ -34,7 +34,8 @@ export type MapsEditingStateValue = (typeof MapsEditingState)[keyof typeof MapsE
 
 export const MapsPinTone = {
   destination: 'destination',
-  origin: 'origin'
+  origin: 'origin',
+  dropped: 'dropped'
 } as const
 
 export type MapsPinToneValue = (typeof MapsPinTone)[keyof typeof MapsPinTone]
@@ -47,8 +48,17 @@ export interface MapsAnnotation {
   readonly tone: MapsPinToneValue
 }
 
+export interface MapsRouteStep {
+  readonly id: string
+  readonly instruction: string
+  readonly roadName: string
+  readonly distance: string
+  readonly coordinate: CLLocationCoordinate2D
+}
+
 export interface MapsRoute {
   readonly path: readonly CLLocationCoordinate2D[]
+  readonly steps: readonly MapsRouteStep[]
   readonly distance: string
   readonly duration: string
 }

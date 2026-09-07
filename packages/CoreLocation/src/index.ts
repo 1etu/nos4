@@ -39,5 +39,6 @@ export {
 export {
   clFetchJSON,
   clGeocodeAddressString,
-  clReverseGeocodeLocation
+  clReverseGeocodeLocation,
+  clSearchCompletions
 } from './Geocoder/CLGeocoder'

@@ -15,7 +15,7 @@ import {
   sbIconReorderFolder,
   type SBIconEntry
 } from '../Support/SBIconState'
-import { SpringBoardMetrics } from '../Support/SpringBoardMetrics'
+import { SpringBoardMetrics, folderAnimation } from '../Support/SpringBoardMetrics'
 
 export const SearchPageIndex = 0
 export const AppsPageIndex = 1
@@ -62,7 +62,7 @@ export const HomeScreen = (props: {
   let startFrame = 0
 
   const folderOffset = () => (folderOpen() ? SpringBoardMetrics.folderOffsetMax : 0)
-  const folderTransition = `transform ${SpringBoardMetrics.folderDuration}s linear`
+  const folderTransition = caTransition(['transform'], folderAnimation)
 
   const cancelStart = () => {
     if (startFrame === 0) return
@@ -101,9 +101,11 @@ export const HomeScreen = (props: {
     cancelStart()
     setOpenFolder({ page, index, stripTop, notchCx })
     startFrame = requestAnimationFrame(() => {
-      startFrame = 0
-      setFolderPresented(true)
-      setFolderOpen(true)
+      startFrame = requestAnimationFrame(() => {
+        startFrame = 0
+        setFolderPresented(true)
+        setFolderOpen(true)
+      })
     })
   }
 
@@ -194,6 +196,7 @@ export const HomeScreen = (props: {
               style={{
                 transform: `translateY(${folderOffset()}px)`,
                 transition: folderTransition,
+                'will-change': 'transform',
                 'z-index': '2'
               }}
               onTransitionEnd={(event) => {
@@ -215,7 +218,7 @@ export const HomeScreen = (props: {
                     height: `${SpringBoardMetrics.folderWallpaperShadowBlur}px`,
                     background: `linear-gradient(to bottom, rgba(0,0,0,${SpringBoardMetrics.folderWallpaperShadowOpacity}), transparent)`,
                     opacity: folderOpen() ? 1 : 0,
-                    transition: `opacity ${SpringBoardMetrics.folderDuration}s linear`
+                    transition: caTransition(['opacity'], folderAnimation)
                   }}
                 />
               </div>

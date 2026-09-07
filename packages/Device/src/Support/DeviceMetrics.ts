@@ -31,6 +31,7 @@ export const DeviceMetrics = {
   homeButtonRestScale: 0.93,
   homeButtonPressedScale: 0.9,
   doublePressWindow: 300,
+  homeIndicatorIdleDelay: 2600,
   screenFadeDuration: 0.28
 } as const
 

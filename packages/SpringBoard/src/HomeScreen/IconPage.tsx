@@ -12,7 +12,7 @@ import {
   sbIconMove,
   type SBIconEntry
 } from '../Support/SBIconState'
-import { SpringBoardMetrics } from '../Support/SpringBoardMetrics'
+import { SpringBoardMetrics, folderAnimation } from '../Support/SpringBoardMetrics'
 
 const flyX = DeviceMetrics.stageWidth * SpringBoardMetrics.flyXRatio
 const flyY = DeviceMetrics.stageHeight * SpringBoardMetrics.flyYRatio
@@ -312,7 +312,7 @@ export const IconPage = (props: {
               style={{
                 transform:
                   foldShift(index()) === 0 ? 'none' : `translateY(${foldShift(index())}px)`,
-                transition: `transform ${SpringBoardMetrics.folderDuration}s linear`,
+                transition: caTransition(['transform'], folderAnimation),
                 'z-index': drag()?.index === index() ? '2' : 'auto',
                 position: drag()?.index === index() ? 'relative' : 'static'
               }}
@@ -327,7 +327,7 @@ export const IconPage = (props: {
                         ? 'transform 0s'
                         : `transform ${SpringBoardMetrics.dragTransition}s ease`
                       : caTransition(['transform'], props.animation)
-                  }, filter ${SpringBoardMetrics.folderDuration}s linear, opacity ${SpringBoardMetrics.folderDuration}s linear`,
+                  }, ${caTransition(['filter', 'opacity'], folderAnimation)}`,
                   'z-index': dragging() ? '2' : '1',
                   filter: dimmed() ? 'grayscale(0.99)' : 'none',
                   opacity: dimmed() ? SpringBoardMetrics.folderDimOpacity : 1

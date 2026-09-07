@@ -9,8 +9,16 @@ import { DeviceHomeButtonPressed, DeviceHomeButtonDoublePressed, DeviceIdentifie
 
 export const DeviceFullscreen = (props: { children: JSX.Element }) => {
   const [size, setSize] = createSignal({ width: window.innerWidth, height: window.innerHeight })
+  const [idle, setIdle] = createSignal(false)
   let screen!: HTMLDivElement
   let pending: ReturnType<typeof setTimeout> | undefined
+  let dozing: ReturnType<typeof setTimeout> | undefined
+
+  const rouse = () => {
+    setIdle(false)
+    clearTimeout(dozing)
+    dozing = setTimeout(() => setIdle(true), DeviceMetrics.homeIndicatorIdleDelay)
+  }
   const scale = () => size().width / DeviceMetrics.stageWidth
   const home = () => {
     if (pending !== undefined) {
@@ -29,6 +37,8 @@ export const DeviceFullscreen = (props: { children: JSX.Element }) => {
     avObserveUserGesture()
     avPreloadSystemSounds()
     uiDeviceSetBatteryMonitoringEnabled(true)
+    rouse()
+    window.addEventListener('pointerdown', rouse, { passive: true })
     const observer = new ResizeObserver(([entry]) => {
       if (entry) setSize({ width: entry.contentRect.width, height: entry.contentRect.height })
     })
@@ -36,6 +46,8 @@ export const DeviceFullscreen = (props: { children: JSX.Element }) => {
     onCleanup(() => {
       observer.disconnect()
       clearTimeout(pending)
+      clearTimeout(dozing)
+      window.removeEventListener('pointerdown', rouse)
       uiDeviceSetBatteryMonitoringEnabled(false)
     })
   })
@@ -55,11 +67,15 @@ export const DeviceFullscreen = (props: { children: JSX.Element }) => {
           <div class='pointer-events-none absolute inset-0' style={{ background: 'black', opacity: uiScreenDimLevel() }} />
         </div>
       </div>
-      <div class='device-fullscreen-bar'>
-        <button type='button' aria-label='Home. Double tap for recent apps.' class='device-fullscreen-home' onClick={home}>
-          <span aria-hidden='true' />
-        </button>
-      </div>
+      <button
+        type='button'
+        aria-label='Home. Double tap for recent apps.'
+        class='device-fullscreen-home'
+        data-idle={idle() ? 'true' : 'false'}
+        onClick={home}
+      >
+        <span aria-hidden='true' />
+      </button>
     </div>
   )
 }

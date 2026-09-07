@@ -25,3 +25,17 @@
     transform: rotate(calc(var(--jiggle-rotation) * -1)) translateX(var(--jiggle-shift));
   }
 }
+
+@keyframes mkPinDrop {
+  from {
+    transform: translateY(calc(var(--mk-pin-rise, 56px) * -1)) scale(0.86);
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
